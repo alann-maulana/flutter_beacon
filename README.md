@@ -1,7 +1,5 @@
 # flutter_beacon
 
-[![pub package](https://img.shields.io/pub/v/beacons.svg)](https://pub.dartlang.org/packages/flutter_beacon)
-
 [Flutter plugin](https://pub.dartlang.org/packages/flutter_beacon/) to work with iBeacons.  
 
 An hybrid iBeacon scanner SDK for Flutter plugin. Supports Android API 18+ and iOS 8+.

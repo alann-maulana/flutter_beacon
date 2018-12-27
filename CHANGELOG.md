@@ -1,3 +1,7 @@
+## [0.1.1]
+
+* Fix region ranging for Android
+
 ## [0.1.0]
 
 * Updating library docs

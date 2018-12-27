@@ -1,6 +1,6 @@
 name: flutter_beacon
 description: Flutter plugin for scanning beacon (iBeacon platform) devices on Android and iOS.
-version: 0.1.0
+version: 0.1.1
 author: Alann Maulana <alann.maulana@outlook.com>
 homepage: https://github.com/alann-maulana/flutter_beacon
 

@@ -28,9 +28,13 @@ class Region {
   /// Constructor for creating [Region] object.
   Region(
       {@required this.identifier,
-      this.proximityUUID,
-      this.major,
-      this.minor}) : assert(Platform.isIOS && proximityUUID != null);
+        this.proximityUUID,
+        this.major,
+        this.minor}) {
+    if (Platform.isIOS) {
+      assert(proximityUUID != null);
+    }
+  }
 
   /// Constructor for deserialize json [Map] into [Region] object.
   Region.fromJson(dynamic json)

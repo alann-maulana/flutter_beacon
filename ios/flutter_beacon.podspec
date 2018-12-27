@@ -4,9 +4,9 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_beacon'
   s.version          = '0.1.0'
-  s.summary          = 'An hybrid iBeacon scanner SDK for Flutter plugin.'
+  s.summary          = 'Flutter plugin for scanning beacon (iBeacon platform) devices on Android and iOS.'
   s.description      = <<-DESC
-An hybrid iBeacon scanner SDK for Flutter plugin.
+Flutter plugin for scanning beacon (iBeacon platform) devices on Android and iOS.
                        DESC
   s.homepage         = 'https://github.com/alann-maulana/flutter_beacon'
   s.license          = { :file => '../LICENSE' }

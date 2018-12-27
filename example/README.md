@@ -1,16 +1,29 @@
-# flutter_beacon_example
+### Initializing Library
 
-Demonstrates how to use the flutter_beacon plugin.
+```dart
+try {
+  await flutterBeacon.initializeScanning;
+} on PlatformException {
+  // library failed to initialize, check code and message
+}
+```
 
-## Getting Started
+### Ranging beacons
 
-This project is a starting point for a Flutter application.
+```dart
+final regions = <Region>[];
 
-A few resources to get you started if this is your first Flutter project:
+if (Platform.isIOS) {
+  regions.add(Region(
+      identifier: 'Apple Airlocate',
+      proximityUUID: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0'));
+} else {
+  // android platform, it can ranging out of beacon that filter all of Proximity UUID
+  regions.add(Region(identifier: 'com.beacon'));
+}
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+flutterBeacon.ranging(regions).listen((RangingResult result) {
+  // result contains a region and list of beacons found
+  // list can be empty if no matching beacons were found in range
+});
+```

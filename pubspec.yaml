@@ -1,6 +1,6 @@
 name: flutter_beacon
 description: An hybrid iBeacon scanner SDK for Flutter plugin.
-version: 0.0.1
+version: 0.0.2
 author: Alann Maulana <alann.maulana@outlook.com>
 homepage: https://github.com/alann-maulana/flutter_beacon
 

@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_beacon'
-  s.version          = '0.1.1'
+  s.version          = '0.2.0'
   s.summary          = 'Flutter plugin for scanning beacon (iBeacon platform) devices on Android and iOS.'
   s.description      = <<-DESC
 Flutter plugin for scanning beacon (iBeacon platform) devices on Android and iOS.

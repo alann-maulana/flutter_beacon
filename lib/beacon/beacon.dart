@@ -32,11 +32,21 @@ class Beacon {
   /// From iOS this value will be null
   final int txPower;
 
-  /// The accuracy of distance of beacon.
+  /// The accuracy of distance of beacon in meter.
   final double accuracy;
 
   /// The proximity of beacon.
   final Proximity _proximity;
+
+  const Beacon({
+    this.proximityUUID,
+    this.macAddress,
+    this.major,
+    this.minor,
+    this.rssi,
+    this.txPower,
+    this.accuracy
+  }) : this._proximity = null;
 
   /// Create beacon object from json.
   Beacon.fromJson(dynamic json)
@@ -54,7 +64,7 @@ class Beacon {
     if (data is num) {
       return data;
     } else if (data is String) {
-      return double.parse(data);
+      return double.tryParse(data) ?? 0.0;
     }
 
     return 0.0;
@@ -65,7 +75,7 @@ class Beacon {
     if (data is num) {
       return data;
     } else if (data is String) {
-      return int.parse(data);
+      return int.tryParse(data) ?? 0;
     }
 
     return 0;
@@ -111,17 +121,32 @@ class Beacon {
   }
 
   /// Serialize current instance object into [Map].
-  dynamic get toJson => <String, dynamic>{
-        'proximityUUID': proximityUUID,
-        'major': major,
-        'minor': minor,
-        'rssi': rssi ?? -1,
-        'txPower': txPower ?? -1,
-        'accuracy': accuracy,
-        'proximity': proximity.toString()
-      };
+  dynamic get toJson {
+    final map = <String, dynamic>{
+      'proximityUUID': proximityUUID,
+      'major': major,
+      'minor': minor,
+      'rssi': rssi ?? -1,
+      'accuracy': accuracy,
+      'proximity': proximity.toString()
+    };
+
+    if (Platform.isAndroid) {
+      map['txPower'] = txPower ?? -1;
+      map['macAddress'] = macAddress ?? "";
+    }
+
+    return map;
+  }
 
   /// Return [Proximity] of beacon.
+  ///
+  /// iOS will always set proximity by default, but Android is not
+  /// so we manage it by filtering the accuracy like bellow :
+  /// - `accuracy == 0.0` : [Proximity.unknown]
+  /// - `accuracy > 0 && accuracy <= 0.5` : [Proximity.immediate]
+  /// - `accuracy > 0.5 && accuracy < 3.0` : [Proximity.near]
+  /// - `accuracy > 3.0` : [Proximity.far]
   Proximity get proximity {
     if (_proximity != null) {
       return _proximity;

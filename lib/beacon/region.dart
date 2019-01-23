@@ -12,7 +12,7 @@ class Region {
 
   /// The proximity UUID of region.
   ///
-  /// For Android, this value can be null.
+  /// For iOS, this value can not be null.
   final String proximityUUID;
 
   /// The major number of region.
@@ -26,6 +26,8 @@ class Region {
   final int minor;
 
   /// Constructor for creating [Region] object.
+  ///
+  /// The [proximityUUID] must not be null when [Platform.isIOS]
   Region(
       {@required this.identifier,
         this.proximityUUID,
@@ -37,7 +39,7 @@ class Region {
   }
 
   /// Constructor for deserialize json [Map] into [Region] object.
-  Region.fromJson(dynamic json)
+  Region._fromJson(dynamic json)
       : identifier = json['identifier'],
         proximityUUID = json['proximityUUID'],
         major = json['major'],

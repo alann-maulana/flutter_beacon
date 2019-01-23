@@ -1,5 +1,7 @@
 # flutter_beacon
 
+[![](/pub/v/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon) [![](/github/license/alann-maulana/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE)
+
 [Flutter plugin](https://pub.dartlang.org/packages/flutter_beacon/) to work with iBeacons.  
 
 An hybrid iBeacon scanner SDK for Flutter plugin. Supports Android API 18+ and iOS 8+.

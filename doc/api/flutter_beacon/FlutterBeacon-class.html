@@ -41,6 +41,7 @@
       <li class="section-title"><a href="flutter_beacon/flutter_beacon-library.html#classes">Classes</a></li>
       <li><a href="flutter_beacon/Beacon-class.html">Beacon</a></li>
       <li><a href="flutter_beacon/FlutterBeacon-class.html">FlutterBeacon</a></li>
+      <li><a href="flutter_beacon/MonitoringResult-class.html">MonitoringResult</a></li>
       <li><a href="flutter_beacon/RangingResult-class.html">RangingResult</a></li>
       <li><a href="flutter_beacon/Region-class.html">Region</a></li>
     
@@ -51,6 +52,8 @@
     
     
       <li class="section-title"><a href="flutter_beacon/flutter_beacon-library.html#enums">Enums</a></li>
+      <li><a href="flutter_beacon/MonitoringEventType-class.html">MonitoringEventType</a></li>
+      <li><a href="flutter_beacon/MonitoringState-class.html">MonitoringState</a></li>
       <li><a href="flutter_beacon/Proximity-class.html">Proximity</a></li>
     
     
@@ -100,6 +103,15 @@
     <section class="summary offset-anchor" id="instance-methods">
       <h2>Methods</h2>
       <dl class="callables">
+        <dt id="monitoring" class="callable">
+          <span class="name"><a href="flutter_beacon/FlutterBeacon/monitoring.html">monitoring</a></span><span class="signature">(<wbr><span class="parameter" id="monitoring-param-regions"><span class="type-annotation">List<span class="signature">&lt;<wbr><span class="type-parameter"><a href="flutter_beacon/Region-class.html">Region</a></span>&gt;</span></span> <span class="parameter-name">regions</span></span>)
+            <span class="returntype parameter">&#8594; Stream<span class="signature">&lt;<wbr><span class="type-parameter"><a href="flutter_beacon/MonitoringResult-class.html">MonitoringResult</a></span>&gt;</span></span>
+          </span>
+          </dt>
+        <dd>
+          Start monitoring iBeacons with defined <code>List</code> of <a href="flutter_beacon/Region-class.html">Region</a>s. <a href="flutter_beacon/FlutterBeacon/monitoring.html">[...]</a>
+          
+</dd>
         <dt id="ranging" class="callable">
           <span class="name"><a href="flutter_beacon/FlutterBeacon/ranging.html">ranging</a></span><span class="signature">(<wbr><span class="parameter" id="ranging-param-regions"><span class="type-annotation">List<span class="signature">&lt;<wbr><span class="type-parameter"><a href="flutter_beacon/Region-class.html">Region</a></span>&gt;</span></span> <span class="parameter-name">regions</span></span>)
             <span class="returntype parameter">&#8594; Stream<span class="signature">&lt;<wbr><span class="type-parameter"><a href="flutter_beacon/RangingResult-class.html">RangingResult</a></span>&gt;</span></span>
@@ -161,6 +173,7 @@
       <li class="inherited"><a href="flutter_beacon/FlutterBeacon/runtimeType.html">runtimeType</a></li>
     
       <li class="section-title"><a href="flutter_beacon/FlutterBeacon-class.html#instance-methods">Methods</a></li>
+      <li><a href="flutter_beacon/FlutterBeacon/monitoring.html">monitoring</a></li>
       <li><a href="flutter_beacon/FlutterBeacon/ranging.html">ranging</a></li>
       <li class="inherited"><a href="flutter_beacon/FlutterBeacon/noSuchMethod.html">noSuchMethod</a></li>
       <li class="inherited"><a href="flutter_beacon/FlutterBeacon/toString.html">toString</a></li>
@@ -177,7 +190,7 @@
 
 <footer>
   <span class="no-break">
-    flutter_beacon 0.0.2
+    flutter_beacon 0.2.0
   </span>
 
 </footer>

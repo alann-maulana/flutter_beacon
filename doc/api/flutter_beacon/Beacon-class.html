@@ -41,6 +41,7 @@
       <li class="section-title"><a href="flutter_beacon/flutter_beacon-library.html#classes">Classes</a></li>
       <li><a href="flutter_beacon/Beacon-class.html">Beacon</a></li>
       <li><a href="flutter_beacon/FlutterBeacon-class.html">FlutterBeacon</a></li>
+      <li><a href="flutter_beacon/MonitoringResult-class.html">MonitoringResult</a></li>
       <li><a href="flutter_beacon/RangingResult-class.html">RangingResult</a></li>
       <li><a href="flutter_beacon/Region-class.html">Region</a></li>
     
@@ -51,6 +52,8 @@
     
     
       <li class="section-title"><a href="flutter_beacon/flutter_beacon-library.html#enums">Enums</a></li>
+      <li><a href="flutter_beacon/MonitoringEventType-class.html">MonitoringEventType</a></li>
+      <li><a href="flutter_beacon/MonitoringState-class.html">MonitoringState</a></li>
       <li><a href="flutter_beacon/Proximity-class.html">Proximity</a></li>
     
     
@@ -69,6 +72,13 @@
       <h2>Constructors</h2>
 
       <dl class="constructor-summary-list">
+        <dt id="Beacon" class="callable">
+          <span class="name"><a href="flutter_beacon/Beacon/Beacon.html">Beacon</a></span><span class="signature">({<span class="parameter" id="-param-proximityUUID"><span class="type-annotation">String</span> <span class="parameter-name">proximityUUID</span>, </span> <span class="parameter" id="-param-macAddress"><span class="type-annotation">String</span> <span class="parameter-name">macAddress</span>, </span> <span class="parameter" id="-param-major"><span class="type-annotation">int</span> <span class="parameter-name">major</span>, </span> <span class="parameter" id="-param-minor"><span class="type-annotation">int</span> <span class="parameter-name">minor</span>, </span> <span class="parameter" id="-param-rssi"><span class="type-annotation">int</span> <span class="parameter-name">rssi</span>, </span> <span class="parameter" id="-param-txPower"><span class="type-annotation">int</span> <span class="parameter-name">txPower</span>, </span> <span class="parameter" id="-param-accuracy"><span class="type-annotation">double</span> <span class="parameter-name">accuracy</span></span> })</span>
+        </dt>
+        <dd>
+          
+          <div class="constructor-modifier features">const</div>
+        </dd>
         <dt id="Beacon.fromJson" class="callable">
           <span class="name"><a href="flutter_beacon/Beacon/Beacon.fromJson.html">Beacon.fromJson</a></span><span class="signature">(<span class="parameter" id="fromJson-param-json"><span class="type-annotation">dynamic</span> <span class="parameter-name">json</span></span>)</span>
         </dt>
@@ -87,7 +97,7 @@
           <span class="signature">&#8594; double</span> 
         </dt>
         <dd>
-          The accuracy of distance of beacon.
+          The accuracy of distance of beacon in meter.
           <div class="features">final</div>
 </dd>
         <dt id="macAddress" class="property">
@@ -119,7 +129,7 @@
           <span class="signature">&#8594; <a href="flutter_beacon/Proximity-class.html">Proximity</a></span> 
         </dt>
         <dd>
-          Return <a href="flutter_beacon/Proximity-class.html">Proximity</a> of beacon.
+          Return <a href="flutter_beacon/Proximity-class.html">Proximity</a> of beacon. <a href="flutter_beacon/Beacon/proximity.html">[...]</a>
           <div class="features">read-only</div>
 </dd>
         <dt id="proximityUUID" class="property">
@@ -243,6 +253,7 @@
   <div class="col-xs-6 col-sm-6 col-md-2 sidebar sidebar-offcanvas-right">
     <ol>
       <li class="section-title"><a href="flutter_beacon/Beacon-class.html#constructors">Constructors</a></li>
+      <li><a href="flutter_beacon/Beacon/Beacon.html">Beacon</a></li>
       <li><a href="flutter_beacon/Beacon/Beacon.fromJson.html">fromJson</a></li>
     
       <li class="section-title">
@@ -279,7 +290,7 @@
 
 <footer>
   <span class="no-break">
-    flutter_beacon 0.0.2
+    flutter_beacon 0.2.0
   </span>
 
 </footer>

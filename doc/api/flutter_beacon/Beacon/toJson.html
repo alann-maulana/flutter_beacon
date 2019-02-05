@@ -40,6 +40,7 @@
     <h5>Beacon class</h5>
     <ol>
       <li class="section-title"><a href="flutter_beacon/Beacon-class.html#constructors">Constructors</a></li>
+      <li><a href="flutter_beacon/Beacon/Beacon.html">Beacon</a></li>
       <li><a href="flutter_beacon/Beacon/Beacon.fromJson.html">fromJson</a></li>
     
       <li class="section-title">
@@ -89,15 +90,23 @@
 </section>
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span> </h2>
-  <pre class="language-dart"><code class="language-dart">dynamic get toJson =&gt; &lt;String, dynamic&gt;{
-      &#39;proximityUUID&#39;: proximityUUID,
-      &#39;major&#39;: major,
-      &#39;minor&#39;: minor,
-      &#39;rssi&#39;: rssi ?? -1,
-      &#39;txPower&#39;: txPower ?? -1,
-      &#39;accuracy&#39;: accuracy,
-      &#39;proximity&#39;: proximity.toString()
-    };</code></pre>
+  <pre class="language-dart"><code class="language-dart">dynamic get toJson {
+  final map = &lt;String, dynamic&gt;{
+    &#39;proximityUUID&#39;: proximityUUID,
+    &#39;major&#39;: major,
+    &#39;minor&#39;: minor,
+    &#39;rssi&#39;: rssi ?? -1,
+    &#39;accuracy&#39;: accuracy,
+    &#39;proximity&#39;: proximity.toString()
+  };
+
+  if (Platform.isAndroid) {
+    map[&#39;txPower&#39;] = txPower ?? -1;
+    map[&#39;macAddress&#39;] = macAddress ?? &quot;&quot;;
+  }
+
+  return map;
+}</code></pre>
 </section>
 </section>
         
@@ -110,7 +119,7 @@
 
 <footer>
   <span class="no-break">
-    flutter_beacon 0.0.2
+    flutter_beacon 0.2.0
   </span>
 
 </footer>

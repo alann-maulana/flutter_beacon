@@ -41,7 +41,6 @@
     <ol>
       <li class="section-title"><a href="flutter_beacon/Region-class.html#constructors">Constructors</a></li>
       <li><a href="flutter_beacon/Region/Region.html">Region</a></li>
-      <li><a href="flutter_beacon/Region/Region.fromJson.html">fromJson</a></li>
     
       <li class="section-title">
         <a href="flutter_beacon/Region-class.html#instance-properties">Properties</a>
@@ -76,15 +75,20 @@
 
     <section class="desc markdown">
       <p>Constructor for creating <a href="flutter_beacon/Region-class.html">Region</a> object.</p>
+<p>The <code>proximityUUID</code> must not be null when <code>Platform.isIOS</code></p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span> </h2>
       <pre class="language-dart"><code class="language-dart">Region(
     {@required this.identifier,
-    this.proximityUUID,
-    this.major,
-    this.minor}) : assert(Platform.isIOS &amp;&amp; proximityUUID != null);</code></pre>
+      this.proximityUUID,
+      this.major,
+      this.minor}) {
+  if (Platform.isIOS) {
+    assert(proximityUUID != null);
+  }
+}</code></pre>
     </section>
 
   </div> <!-- /.main-content -->
@@ -96,7 +100,7 @@
 
 <footer>
   <span class="no-break">
-    flutter_beacon 0.0.2
+    flutter_beacon 0.2.0
   </span>
 
 </footer>

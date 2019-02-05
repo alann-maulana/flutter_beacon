@@ -11,8 +11,8 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;

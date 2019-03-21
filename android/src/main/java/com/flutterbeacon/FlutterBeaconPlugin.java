@@ -180,8 +180,10 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     try {
       FlutterBeaconPlugin.this.beaconManager.removeAllRangeNotifiers();
       FlutterBeaconPlugin.this.beaconManager.addRangeNotifier(rangeNotifier);
-      for (Region region : regionRanging) {
-        beaconManager.startRangingBeaconsInRegion(region);
+      if (regionRanging != null) {
+        for (Region region : regionRanging) {
+          beaconManager.startRangingBeaconsInRegion(region);
+        }
       }
     } catch (RemoteException e) {
       if (FlutterBeaconPlugin.this.eventSinkRanging != null) {

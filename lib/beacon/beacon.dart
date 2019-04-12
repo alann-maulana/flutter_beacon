@@ -9,7 +9,6 @@ enum Proximity { unknown, immediate, near, far }
 
 /// Class for managing Beacon object.
 class Beacon {
-
   /// The proximity UUID of beacon.
   final String proximityUUID;
 
@@ -38,15 +37,15 @@ class Beacon {
   /// The proximity of beacon.
   final Proximity _proximity;
 
-  const Beacon({
-    this.proximityUUID,
-    this.macAddress,
-    this.major,
-    this.minor,
-    this.rssi,
-    this.txPower,
-    this.accuracy
-  }) : this._proximity = null;
+  const Beacon(
+      {this.proximityUUID,
+      this.macAddress,
+      this.major,
+      this.minor,
+      this.rssi,
+      this.txPower,
+      this.accuracy})
+      : this._proximity = null;
 
   /// Create beacon object from json.
   Beacon.fromJson(dynamic json)

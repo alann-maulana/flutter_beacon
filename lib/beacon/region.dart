@@ -6,7 +6,6 @@ part of flutter_beacon;
 
 /// Class for managing ranging region scanning.
 class Region {
-
   /// The unique identifier of region.
   final String identifier;
 
@@ -29,10 +28,7 @@ class Region {
   ///
   /// The [proximityUUID] must not be null when [Platform.isIOS]
   Region(
-      {@required this.identifier,
-        this.proximityUUID,
-        this.major,
-        this.minor}) {
+      {@required this.identifier, this.proximityUUID, this.major, this.minor}) {
     if (Platform.isIOS) {
       assert(proximityUUID != null);
     }
@@ -69,11 +65,10 @@ class Region {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Region &&
-              runtimeType == other.runtimeType &&
-              identifier == other.identifier;
+      other is Region &&
+          runtimeType == other.runtimeType &&
+          identifier == other.identifier;
 
   @override
   int get hashCode => identifier.hashCode;
-
 }

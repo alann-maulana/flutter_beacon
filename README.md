@@ -10,6 +10,7 @@ Features:
 
 * Automatic permission management
 * Ranging iBeacons  
+* Monitoring iBeacons
 
 ## Installation
 
@@ -17,7 +18,7 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_beacon: ^0.1.1
+  flutter_beacon: ^0.2.1
 ```
 
 ### Setup specific for Android
@@ -43,7 +44,13 @@ Permission must be declared in `ios/Runner/Info.plist`:
   <!-- When in use -->
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>Reason why app needs location</string>
-  ...
+  <!-- Always -->
+  <!-- for iOS 11 + -->
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  <string>Reason why app needs location</string>
+  <!-- for iOS 9/10 -->
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>Reason why app needs location</string>
 </dict>
 ```
 

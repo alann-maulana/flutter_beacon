@@ -1,3 +1,11 @@
+## [0.2.1]
+
+* Fix crash ranging when region not set for Android
+
+## [0.2.0]
+
+* Migrate to AndroidX
+
 ## [0.1.1]
 
 * Fix region ranging for Android

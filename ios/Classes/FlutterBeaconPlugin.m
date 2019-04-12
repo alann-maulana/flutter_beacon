@@ -151,7 +151,8 @@
         case CBManagerStatePoweredOn:
             if ([CLLocationManager locationServicesEnabled]) {
                 if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
-                    [self.locationManager requestWhenInUseAuthorization];
+                    //[self.locationManager requestWhenInUseAuthorization];
+                    [self.locationManager requestAlwaysAuthorization];
                     return;
                 } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
                     message = @"CLAuthorizationStatusDenied";
@@ -182,6 +183,8 @@
     NSString *message = nil;
     switch (status) {
         case kCLAuthorizationStatusAuthorizedAlways:
+            // manage scanning
+            break;
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             // manage scanning
             break;

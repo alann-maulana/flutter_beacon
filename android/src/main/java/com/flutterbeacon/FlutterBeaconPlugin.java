@@ -177,6 +177,11 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   }
 
   private void startRanging() {
+    if (regionRanging == null || regionRanging.isEmpty()) {
+      Log.e("RANGING", "Region ranging is null or empty. Ranging not started.");
+      return;
+    }
+
     try {
       FlutterBeaconPlugin.this.beaconManager.removeAllRangeNotifiers();
       FlutterBeaconPlugin.this.beaconManager.addRangeNotifier(rangeNotifier);
@@ -198,6 +203,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     @Override
     public void onBeaconServiceConnect() {
       startRanging();
+      startMonitoring();
     }
 
     @Override
@@ -270,6 +276,11 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   }
 
   private void startMonitoring() {
+    if (regionMonitoring == null || regionMonitoring.isEmpty()) {
+      Log.e("MONITORING", "Region monitoring is null or empty. Monitoring not started.");
+      return;
+    }
+
     try {
       FlutterBeaconPlugin.this.beaconManager.removeAllMonitorNotifiers();
       FlutterBeaconPlugin.this.beaconManager.addMonitorNotifier(monitorNotifier);

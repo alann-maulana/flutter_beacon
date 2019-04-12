@@ -45,11 +45,11 @@
 <p><a href="https://github.com/alann-maulana/flutter_beacon"><img alt="" src="/pub/v/flutter_beacon.svg"></a> <a href="https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE"><img alt="" src="/github/license/alann-maulana/flutter_beacon.svg"></a></p>
 <p><a href="https://pub.dartlang.org/packages/flutter_beacon/">Flutter plugin</a> to work with iBeacons.  </p>
 <p>An hybrid iBeacon scanner SDK for Flutter plugin. Supports Android API 18+ and iOS 8+.</p>
-<p>Features:</p><ul><li>Automatic permission management</li><li>Ranging iBeacons  </li></ul>
+<p>Features:</p><ul><li>Automatic permission management</li><li>Ranging iBeacons  </li><li>Monitoring iBeacons</li></ul>
 <h2 id="installation">Installation</h2>
 <p>Add to pubspec.yaml:</p>
 <pre class="language-yaml"><code class="language-yaml">dependencies:
-  flutter_beacon: ^0.1.1
+  flutter_beacon: ^0.2.1
 </code></pre>
 <h3 id="setup-specific-for-android">Setup specific for Android</h3>
 <p>Nothing.</p>
@@ -63,7 +63,13 @@
   &lt;!-- When in use --&gt;
   &lt;key&gt;NSLocationWhenInUseUsageDescription&lt;/key&gt;
   &lt;string&gt;Reason why app needs location&lt;/string&gt;
-  ...
+  &lt;!-- Always --&gt;
+  &lt;!-- for iOS 11 + --&gt;
+  &lt;key&gt;NSLocationAlwaysAndWhenInUseUsageDescription&lt;/key&gt;
+  &lt;string&gt;Reason why app needs location&lt;/string&gt;
+  &lt;!-- for iOS 9/10 --&gt;
+  &lt;key&gt;NSLocationAlwaysUsageDescription&lt;/key&gt;
+  &lt;string&gt;Reason why app needs location&lt;/string&gt;
 &lt;/dict&gt;
 </code></pre>
 <h2 id="how-to">How-to</h2>
@@ -116,7 +122,7 @@ flutterBeacon.ranging(regions).listen((RangingResult result) {
 
 <footer>
   <span class="no-break">
-    flutter_beacon 0.2.0
+    flutter_beacon 0.2.1
   </span>
 
 </footer>

@@ -11,9 +11,10 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.RemoteException;
+import android.util.Log;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -324,7 +325,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       if (FlutterBeaconPlugin.this.eventSinkMonitoring != null) {
         Map<String, Object> map = new HashMap<>();
         map.put("event", "didDetermineStateForRegion");
-        map.put("state", state == MonitorNotifier.INSIDE ? "INSIDE" : state == MonitorNotifier.OUTSIDE ?"OUTSIDE" : "UNKNOWN");
+        map.put("state", state == MonitorNotifier.INSIDE ? "INSIDE" : state == MonitorNotifier.OUTSIDE ? "OUTSIDE" : "UNKNOWN");
         map.put("region", FlutterBeaconUtils.regionToMap(region));
         FlutterBeaconPlugin.this.eventSinkMonitoring.success(map);
       }

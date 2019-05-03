@@ -1,6 +1,6 @@
 # flutter_beacon
 
-[![](/pub/v/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon) [![](/github/license/alann-maulana/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE)
+[![Pub](https://img.shields.io/pub/v/flutter_beacon.svg)](https://pub.dartlang.org/packages/flutter_beacon) [![GitHub](https://img.shields.io/github/license/alann-maulana/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE)
 
 [Flutter plugin](https://pub.dartlang.org/packages/flutter_beacon/) to work with iBeacons.  
 
@@ -18,7 +18,7 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_beacon: ^0.2.1
+  flutter_beacon: ^0.2.2
 ```
 
 ### Setup specific for Android

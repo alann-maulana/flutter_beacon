@@ -297,6 +297,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
   private void stopMonitoring() {
     this.eventSinkMonitoring = null;
+    beaconManager.unbind(beaconConsumer);
   }
 
   private MonitorNotifier monitorNotifier = new MonitorNotifier() {

@@ -3,14 +3,14 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_beacon'
-  s.version          = '0.2.2'
+  s.version          = '0.2.3'
   s.summary          = 'Flutter plugin for scanning beacon (iBeacon platform) devices on Android and iOS.'
   s.description      = <<-DESC
 Flutter plugin for scanning beacon (iBeacon platform) devices on Android and iOS.
                        DESC
   s.homepage         = 'https://github.com/alann-maulana/flutter_beacon'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Alann Maulana' => 'alann.maulana@outlook.com' }
+  s.author           = { 'Alann Maulana' => 'kangmas.alan@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'

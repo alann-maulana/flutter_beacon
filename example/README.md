@@ -3,7 +3,7 @@
 ```dart
 try {
   await flutterBeacon.initializeScanning;
-} on PlatformException {
+} on PlatformException catch(e) {
   // library failed to initialize, check code and message
 }
 ```
@@ -22,10 +22,14 @@ if (Platform.isIOS) {
   regions.add(Region(identifier: 'com.beacon'));
 }
 
-flutterBeacon.ranging(regions).listen((RangingResult result) {
+// to start ranging beacons
+_streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
   // result contains a region and list of beacons found
   // list can be empty if no matching beacons were found in range
 });
+
+// to stop ranging beacons
+_streamRanging.cancel();
 ```
 
 ### Monitoring beacons
@@ -42,7 +46,11 @@ if (Platform.isIOS) {
   regions.add(Region(identifier: 'com.beacon'));
 }
 
-flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
+// to start monitoring beacons
+_streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
   // result contains a region, event type and event state
 });
+
+// to stop monitoring beacons
+_streamMonitoring.cancel();
 ```

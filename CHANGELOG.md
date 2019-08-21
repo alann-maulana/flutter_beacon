@@ -1,3 +1,8 @@
+## [0.2.3]
+
+* Update gradle build to latest version
+* Update stop 
+
 ## [0.2.2]
 
 * Update gradle to latest version

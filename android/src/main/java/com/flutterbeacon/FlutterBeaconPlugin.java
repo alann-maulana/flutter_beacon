@@ -197,6 +197,15 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   }
 
   private void stopRanging() {
+    if (regionRanging != null && !regionRanging.isEmpty()) {
+      try {
+        for (Region region : regionRanging) {
+          beaconManager.stopRangingBeaconsInRegion(region);
+          FlutterBeaconPlugin.this.beaconManager.removeRangeNotifier(rangeNotifier);
+        }
+      } catch (RemoteException ignored) {
+      }
+    }
     this.eventSinkRanging = null;
   }
 
@@ -296,6 +305,15 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   }
 
   private void stopMonitoring() {
+    if (regionMonitoring != null && !regionMonitoring.isEmpty()) {
+      try {
+        for (Region region : regionMonitoring) {
+          beaconManager.stopMonitoringBeaconsInRegion(region);
+          FlutterBeaconPlugin.this.beaconManager.removeMonitorNotifier(monitorNotifier);
+        }
+      } catch (RemoteException ignored) {
+      }
+    }
     this.eventSinkMonitoring = null;
     beaconManager.unbind(beaconConsumer);
   }

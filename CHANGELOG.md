@@ -1,3 +1,8 @@
+## [0.2.4]
+
+* Fix bugs
+* Add `close` scanning API
+
 ## [0.2.3]
 
 * Update gradle build to latest version

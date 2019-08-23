@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -42,6 +43,8 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     PluginRegistry.RequestPermissionsResultListener,
     PluginRegistry.ActivityResultListener {
   private static final String TAG = FlutterBeaconPlugin.class.getSimpleName();
+  private BeaconParser iBeaconLayout = new BeaconParser()
+      .setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24");
 
   private static final int REQUEST_CODE_LOCATION = 1234;
   private static final int REQUEST_CODE_BLUETOOTH = 5678;
@@ -79,38 +82,48 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   }
 
   @Override
-  public void onMethodCall(MethodCall call, Result result) {
+  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("initialize")) {
-      this.flutterResult = result;
-      initialize();
-    } else {
-      result.notImplemented();
+      initialize(result);
+      return;
     }
+
+    if (call.method.equals("close")) {
+      if (beaconManager != null && beaconManager.isBound(beaconConsumer)) {
+        beaconManager.unbind(beaconConsumer);
+      }
+      result.success(true);
+      return;
+    }
+
+    result.notImplemented();
   }
 
-  private void initialize() {
-    this.beaconManager = BeaconManager.getInstanceForApplication(registrar.activity());
-
-    BeaconParser iBeaconLayout = new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24");
-    beaconManager.getBeaconParsers().clear();
-    beaconManager.getBeaconParsers().add(iBeaconLayout);
+  private void initialize(Result result) {
+    beaconManager = BeaconManager.getInstanceForApplication(registrar.activity());
+    if (!beaconManager.getBeaconParsers().contains(iBeaconLayout)) {
+      beaconManager.getBeaconParsers().clear();
+      beaconManager.getBeaconParsers().add(iBeaconLayout);
+    }
 
     if (checkLocationServicesPermission() && checkBluetoothPoweredOn()) {
-      if (this.flutterResult != null) {
-        this.flutterResult.success(true);
-        this.flutterResult = null;
-      }
-    } else {
-      if (!checkBluetoothPoweredOn()) {
-        registrar.activity().startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_CODE_BLUETOOTH);
+      if (result != null) {
+        result.success(true);
         return;
       }
+    }
 
-      if (!checkLocationServicesPermission()) {
-        ActivityCompat.requestPermissions(registrar.activity(), new String[]{
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        }, REQUEST_CODE_LOCATION);
-      }
+    flutterResult = result;
+    if (!checkBluetoothPoweredOn()) {
+      Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+      registrar.activity().startActivityForResult(intent, REQUEST_CODE_BLUETOOTH);
+      return;
+    }
+
+    if (!checkLocationServicesPermission()) {
+      ActivityCompat.requestPermissions(registrar.activity(), new String[]{
+          Manifest.permission.ACCESS_COARSE_LOCATION
+      }, REQUEST_CODE_LOCATION);
     }
   }
 
@@ -139,12 +152,12 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   private EventChannel.StreamHandler rangingStreamHandler = new EventChannel.StreamHandler() {
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
-      FlutterBeaconPlugin.this.startRanging(o, eventSink);
+      startRanging(o, eventSink);
     }
 
     @Override
     public void onCancel(Object o) {
-      FlutterBeaconPlugin.this.stopRanging();
+      stopRanging();
     }
   };
 
@@ -153,25 +166,25 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     if (o instanceof List) {
       //noinspection unchecked
       List<Object> list = (List<Object>) o;
-      if (this.regionRanging == null) {
-        this.regionRanging = new ArrayList<>();
+      if (regionRanging == null) {
+        regionRanging = new ArrayList<>();
       } else {
-        this.regionRanging.clear();
+        regionRanging.clear();
       }
       for (Object object : list) {
         if (object instanceof Map) {
           //noinspection unchecked
           Region region = FlutterBeaconUtils.regionFromMap((Map<String, Object>) object);
-          this.regionRanging.add(region);
+          regionRanging.add(region);
         }
       }
     } else {
       eventSink.error("Beacon", "invalid region for ranging", null);
       return;
     }
-    this.eventSinkRanging = eventSink;
-    if (!this.beaconManager.isBound(beaconConsumer)) {
-      this.beaconManager.bind(beaconConsumer);
+    eventSinkRanging = eventSink;
+    if (!beaconManager.isBound(beaconConsumer)) {
+      beaconManager.bind(beaconConsumer);
     } else {
       startRanging();
     }
@@ -184,14 +197,14 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     }
 
     try {
-      FlutterBeaconPlugin.this.beaconManager.removeAllRangeNotifiers();
-      FlutterBeaconPlugin.this.beaconManager.addRangeNotifier(rangeNotifier);
+      beaconManager.removeAllRangeNotifiers();
+      beaconManager.addRangeNotifier(rangeNotifier);
       for (Region region : regionRanging) {
         beaconManager.startRangingBeaconsInRegion(region);
       }
     } catch (RemoteException e) {
-      if (FlutterBeaconPlugin.this.eventSinkRanging != null) {
-        FlutterBeaconPlugin.this.eventSinkRanging.error("Beacon", e.getLocalizedMessage(), null);
+      if (eventSinkRanging != null) {
+        eventSinkRanging.error("Beacon", e.getLocalizedMessage(), null);
       }
     }
   }
@@ -201,12 +214,13 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       try {
         for (Region region : regionRanging) {
           beaconManager.stopRangingBeaconsInRegion(region);
-          FlutterBeaconPlugin.this.beaconManager.removeRangeNotifier(rangeNotifier);
         }
+
+        beaconManager.removeRangeNotifier(rangeNotifier);
       } catch (RemoteException ignored) {
       }
     }
-    this.eventSinkRanging = null;
+    eventSinkRanging = null;
   }
 
   private final BeaconConsumer beaconConsumer = new BeaconConsumer() {
@@ -235,11 +249,11 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   private final RangeNotifier rangeNotifier = new RangeNotifier() {
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> collection, Region region) {
-      if (FlutterBeaconPlugin.this.eventSinkRanging != null) {
+      if (eventSinkRanging != null) {
         Map<String, Object> map = new HashMap<>();
         map.put("region", FlutterBeaconUtils.regionToMap(region));
         map.put("beacons", FlutterBeaconUtils.beaconsToArray(new ArrayList<>(collection)));
-        FlutterBeaconPlugin.this.eventSinkRanging.success(map);
+        eventSinkRanging.success(map);
       }
     }
   };
@@ -247,12 +261,12 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   private EventChannel.StreamHandler monitoringStreamHandler = new EventChannel.StreamHandler() {
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
-      FlutterBeaconPlugin.this.startMonitoring(o, eventSink);
+      startMonitoring(o, eventSink);
     }
 
     @Override
     public void onCancel(Object o) {
-      FlutterBeaconPlugin.this.stopMonitoring();
+      stopMonitoring();
     }
   };
 
@@ -261,25 +275,25 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     if (o instanceof List) {
       //noinspection unchecked
       List<Object> list = (List<Object>) o;
-      if (this.regionMonitoring == null) {
-        this.regionMonitoring = new ArrayList<>();
+      if (regionMonitoring == null) {
+        regionMonitoring = new ArrayList<>();
       } else {
-        this.regionMonitoring.clear();
+        regionMonitoring.clear();
       }
       for (Object object : list) {
         if (object instanceof Map) {
           //noinspection unchecked
           Region region = FlutterBeaconUtils.regionFromMap((Map<String, Object>) object);
-          this.regionMonitoring.add(region);
+          regionMonitoring.add(region);
         }
       }
     } else {
       eventSink.error("Beacon", "invalid region for monitoring", null);
       return;
     }
-    this.eventSinkMonitoring = eventSink;
-    if (!this.beaconManager.isBound(beaconConsumer)) {
-      this.beaconManager.bind(beaconConsumer);
+    eventSinkMonitoring = eventSink;
+    if (!beaconManager.isBound(beaconConsumer)) {
+      beaconManager.bind(beaconConsumer);
     } else {
       startMonitoring();
     }
@@ -292,14 +306,14 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     }
 
     try {
-      FlutterBeaconPlugin.this.beaconManager.removeAllMonitorNotifiers();
-      FlutterBeaconPlugin.this.beaconManager.addMonitorNotifier(monitorNotifier);
+      beaconManager.removeAllMonitorNotifiers();
+      beaconManager.addMonitorNotifier(monitorNotifier);
       for (Region region : regionMonitoring) {
         beaconManager.startMonitoringBeaconsInRegion(region);
       }
     } catch (RemoteException e) {
-      if (FlutterBeaconPlugin.this.eventSinkMonitoring != null) {
-        FlutterBeaconPlugin.this.eventSinkMonitoring.error("Beacon", e.getLocalizedMessage(), null);
+      if (eventSinkMonitoring != null) {
+        eventSinkMonitoring.error("Beacon", e.getLocalizedMessage(), null);
       }
     }
   }
@@ -309,44 +323,43 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       try {
         for (Region region : regionMonitoring) {
           beaconManager.stopMonitoringBeaconsInRegion(region);
-          FlutterBeaconPlugin.this.beaconManager.removeMonitorNotifier(monitorNotifier);
         }
+        beaconManager.removeMonitorNotifier(monitorNotifier);
       } catch (RemoteException ignored) {
       }
     }
-    this.eventSinkMonitoring = null;
-    beaconManager.unbind(beaconConsumer);
+    eventSinkMonitoring = null;
   }
 
   private MonitorNotifier monitorNotifier = new MonitorNotifier() {
     @Override
     public void didEnterRegion(Region region) {
-      if (FlutterBeaconPlugin.this.eventSinkMonitoring != null) {
+      if (eventSinkMonitoring != null) {
         Map<String, Object> map = new HashMap<>();
         map.put("event", "didEnterRegion");
         map.put("region", FlutterBeaconUtils.regionToMap(region));
-        FlutterBeaconPlugin.this.eventSinkMonitoring.success(map);
+        eventSinkMonitoring.success(map);
       }
     }
 
     @Override
     public void didExitRegion(Region region) {
-      if (FlutterBeaconPlugin.this.eventSinkMonitoring != null) {
+      if (eventSinkMonitoring != null) {
         Map<String, Object> map = new HashMap<>();
         map.put("event", "didExitRegion");
         map.put("region", FlutterBeaconUtils.regionToMap(region));
-        FlutterBeaconPlugin.this.eventSinkMonitoring.success(map);
+        eventSinkMonitoring.success(map);
       }
     }
 
     @Override
     public void didDetermineStateForRegion(int state, Region region) {
-      if (FlutterBeaconPlugin.this.eventSinkMonitoring != null) {
+      if (eventSinkMonitoring != null) {
         Map<String, Object> map = new HashMap<>();
         map.put("event", "didDetermineStateForRegion");
-        map.put("state", state == MonitorNotifier.INSIDE ? "INSIDE" : state == MonitorNotifier.OUTSIDE ? "OUTSIDE" : "UNKNOWN");
+        map.put("state", FlutterBeaconUtils.parseState(state));
         map.put("region", FlutterBeaconUtils.regionToMap(region));
-        FlutterBeaconPlugin.this.eventSinkMonitoring.success(map);
+        eventSinkMonitoring.success(map);
       }
     }
   };
@@ -365,11 +378,11 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       }
     }
 
-    if (this.flutterResult != null) {
+    if (flutterResult != null) {
       if (locationServiceAllowed) {
-        this.flutterResult.success(true);
+        flutterResult.success(true);
       } else {
-        this.flutterResult.error("Beacon", "location services not allowed", null);
+        flutterResult.error("Beacon", "location services not allowed", null);
       }
       this.flutterResult = null;
     }
@@ -387,15 +400,15 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
             Manifest.permission.ACCESS_COARSE_LOCATION
         }, REQUEST_CODE_LOCATION);
       } else {
-        if (this.flutterResult != null) {
-          this.flutterResult.success(true);
-          this.flutterResult = null;
+        if (flutterResult != null) {
+          flutterResult.success(true);
+          flutterResult = null;
         }
       }
     } else {
-      if (this.flutterResult != null) {
-        this.flutterResult.error("Beacon", "bluetooth disabled", null);
-        this.flutterResult = null;
+      if (flutterResult != null) {
+        flutterResult.error("Beacon", "bluetooth disabled", null);
+        flutterResult = null;
       }
     }
 

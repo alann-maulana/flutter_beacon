@@ -18,7 +18,7 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_beacon: ^0.2.3
+  flutter_beacon: ^0.2.4
 ```
 
 ### Setup specific for Android

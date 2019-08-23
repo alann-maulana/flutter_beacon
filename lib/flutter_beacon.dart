@@ -54,6 +54,11 @@ class FlutterBeacon {
     await _methodChannel.invokeMethod('initialize');
   }
 
+  /// Close scanning API.
+  Future<void> get close async {
+    await _methodChannel.invokeMethod('close');
+  }
+
   /// Start ranging iBeacons with defined [List] of [Region]s.
   ///
   /// This will fires [RangingResult] whenever the iBeacons in range.

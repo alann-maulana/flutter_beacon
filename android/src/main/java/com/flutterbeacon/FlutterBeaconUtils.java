@@ -2,6 +2,7 @@ package com.flutterbeacon;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.Identifier;
+import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.ArrayList;
@@ -11,6 +12,10 @@ import java.util.Locale;
 import java.util.Map;
 
 class FlutterBeaconUtils {
+  static String parseState(int state) {
+    return state == MonitorNotifier.INSIDE ? "INSIDE" : state == MonitorNotifier.OUTSIDE ? "OUTSIDE" : "UNKNOWN";
+  }
+
   static List<Map<String, Object>> beaconsToArray(List<Beacon> beacons) {
     if (beacons == null) {
       return new ArrayList<>();

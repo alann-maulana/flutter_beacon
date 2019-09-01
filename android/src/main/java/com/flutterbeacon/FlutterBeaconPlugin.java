@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -50,6 +51,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   private static final int REQUEST_CODE_BLUETOOTH = 5678;
 
   private final Registrar registrar;
+  private FlutterBluetoothStateReceiver mReceiver = new FlutterBluetoothStateReceiver();
   private BeaconManager beaconManager;
   private Result flutterResult;
   private EventChannel.EventSink eventSinkRanging, eventSinkMonitoring;
@@ -79,6 +81,10 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     final EventChannel eventChannelMonitoring =
         new EventChannel(registrar.messenger(), "flutter_beacon_event_monitoring");
     eventChannelMonitoring.setStreamHandler(instance.monitoringStreamHandler);
+
+    final EventChannel eventChannelBluetoothState =
+        new EventChannel(registrar.messenger(), "flutter_bluetooth_state_changed");
+    eventChannelBluetoothState.setStreamHandler(instance.bluetoothStateChangeStreamHandler);
   }
 
   @Override
@@ -88,9 +94,23 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       return;
     }
 
+    if (call.method.equals("state")) {
+      try {
+        boolean flag = checkBluetoothPoweredOn();
+        result.success(flag ? "STATE_ON" : "STATE_OFF");
+      } catch (RuntimeException ignored) {
+        result.success("STATE_UNSUPPORTED");
+      }
+      return;
+    }
+
     if (call.method.equals("close")) {
-      if (beaconManager != null && beaconManager.isBound(beaconConsumer)) {
-        beaconManager.unbind(beaconConsumer);
+      if (beaconManager != null) {
+        beaconManager.removeAllRangeNotifiers();
+        beaconManager.removeAllMonitorNotifiers();
+        if (beaconManager.isBound(beaconConsumer)) {
+          beaconManager.unbind(beaconConsumer);
+        }
       }
       result.success(true);
       return;
@@ -127,6 +147,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     }
   }
 
+  // region CHECKER STATE
   private boolean checkLocationServicesPermission() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       return ContextCompat.checkSelfPermission(registrar.activity(),
@@ -148,7 +169,46 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
     return (adapter != null) && (adapter.isEnabled());
   }
+  // endregion
 
+  private EventChannel.StreamHandler bluetoothStateChangeStreamHandler = new EventChannel.StreamHandler() {
+    @Override
+    public void onListen(Object o, EventChannel.EventSink eventSink) {
+      IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+      mReceiver.setEventSink(eventSink);
+      registrar.activity().registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void onCancel(Object o) {
+      registrar.activity().unregisterReceiver(mReceiver);
+    }
+  };
+
+  private final BeaconConsumer beaconConsumer = new BeaconConsumer() {
+    @Override
+    public void onBeaconServiceConnect() {
+      startRanging();
+      startMonitoring();
+    }
+
+    @Override
+    public Context getApplicationContext() {
+      return registrar.activity().getApplicationContext();
+    }
+
+    @Override
+    public void unbindService(ServiceConnection serviceConnection) {
+      registrar.activity().unbindService(serviceConnection);
+    }
+
+    @Override
+    public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
+      return registrar.activity().bindService(intent, serviceConnection, i);
+    }
+  };
+
+  //region RANGING
   private EventChannel.StreamHandler rangingStreamHandler = new EventChannel.StreamHandler() {
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
@@ -223,29 +283,6 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     eventSinkRanging = null;
   }
 
-  private final BeaconConsumer beaconConsumer = new BeaconConsumer() {
-    @Override
-    public void onBeaconServiceConnect() {
-      startRanging();
-      startMonitoring();
-    }
-
-    @Override
-    public Context getApplicationContext() {
-      return registrar.activity().getApplicationContext();
-    }
-
-    @Override
-    public void unbindService(ServiceConnection serviceConnection) {
-      registrar.activity().unbindService(serviceConnection);
-    }
-
-    @Override
-    public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
-      return registrar.activity().bindService(intent, serviceConnection, i);
-    }
-  };
-
   private final RangeNotifier rangeNotifier = new RangeNotifier() {
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> collection, Region region) {
@@ -257,7 +294,9 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       }
     }
   };
+  //endregion
 
+  //region MONITORING
   private EventChannel.StreamHandler monitoringStreamHandler = new EventChannel.StreamHandler() {
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
@@ -363,7 +402,9 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       }
     }
   };
+  //endregion
 
+  // region ACTIVITY CALLBACK
   @Override
   public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
     boolean locationServiceAllowed = false;
@@ -414,4 +455,5 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
     return bluetoothEnabled;
   }
+  // endregion
 }

@@ -4,6 +4,7 @@
 
 @property FlutterEventSink flutterEventSinkRanging;
 @property FlutterEventSink flutterEventSinkMonitoring;
+@property FlutterEventSink flutterEventSinkBluetooth;
 
 - (void) startRangingBeaconWithCall:(id)arguments;
 - (void) stopRangingBeacon;

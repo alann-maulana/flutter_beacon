@@ -8,10 +8,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 part 'beacon/beacon.dart';
+part 'beacon/bluetooth_state.dart';
 part 'beacon/monitoring_result.dart';
 part 'beacon/ranging_result.dart';
 part 'beacon/region.dart';
@@ -35,11 +37,19 @@ class FlutterBeacon {
   static const EventChannel _monitoringChannel =
       EventChannel('flutter_beacon_event_monitoring');
 
+  /// Event Channel used to communicate to native code to checking
+  /// for bluetooth state changed.
+  static const EventChannel _bluetoothStateChangedChannel =
+      EventChannel('flutter_bluetooth_state_changed');
+
   /// This information does not change from call to call. Cache it.
   Stream<RangingResult> _onRanging;
 
   /// This information does not change from call to call. Cache it.
   Stream<MonitoringResult> _onMonitoring;
+
+  /// This information does not change from call to call. Cache it.
+  Stream<BluetoothState> _onBluetoothState;
 
   /// Initialize scanning API.
   ///
@@ -83,5 +93,17 @@ class FlutterBeacon {
           .map((dynamic event) => MonitoringResult._from(event));
     }
     return _onMonitoring;
+  }
+
+  /// Start checking for bluetooth state changed.
+  ///
+  /// This will fires [BluetoothState] whenever bluetooth state changed.
+  Stream<BluetoothState> bluetoothStateChanged() {
+    if (_onBluetoothState == null) {
+      _onBluetoothState = _bluetoothStateChangedChannel
+          .receiveBroadcastStream()
+          .map((dynamic event) => BluetoothState.parse(event));
+    }
+    return _onBluetoothState;
   }
 }

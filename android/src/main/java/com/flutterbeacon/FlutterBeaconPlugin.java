@@ -243,7 +243,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       return;
     }
     eventSinkRanging = eventSink;
-    if (!beaconManager.isBound(beaconConsumer)) {
+    if (beaconManager!= null && !beaconManager.isBound(beaconConsumer)) {
       beaconManager.bind(beaconConsumer);
     } else {
       startRanging();
@@ -331,7 +331,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       return;
     }
     eventSinkMonitoring = eventSink;
-    if (!beaconManager.isBound(beaconConsumer)) {
+    if (beaconManager!= null && !beaconManager.isBound(beaconConsumer)) {
       beaconManager.bind(beaconConsumer);
     } else {
       startMonitoring();

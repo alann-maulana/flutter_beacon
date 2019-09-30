@@ -257,10 +257,12 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     }
 
     try {
-      beaconManager.removeAllRangeNotifiers();
-      beaconManager.addRangeNotifier(rangeNotifier);
-      for (Region region : regionRanging) {
-        beaconManager.startRangingBeaconsInRegion(region);
+      if (beaconManager != null) {
+        beaconManager.removeAllRangeNotifiers();
+        beaconManager.addRangeNotifier(rangeNotifier);
+        for (Region region : regionRanging) {
+          beaconManager.startRangingBeaconsInRegion(region);
+        }
       }
     } catch (RemoteException e) {
       if (eventSinkRanging != null) {

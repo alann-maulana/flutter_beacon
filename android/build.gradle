@@ -31,5 +31,5 @@ android {
 
 dependencies {
     api 'androidx.legacy:legacy-support-v4:1.0.0'
-    api 'org.altbeacon:android-beacon-library:2.16.2'
+    api 'org.altbeacon:android-beacon-library:2.16.3'
 }

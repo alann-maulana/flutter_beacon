@@ -46,13 +46,13 @@
         return;
     }
     
-    if ([@"requestAuthorization" isEqualToString:call.method]) {
+    if ([@"openSettings" isEqualToString:call.method]) {
         self.flutterResult = result;
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
         return;
     }
     
-    if ([@"openSettings" isEqualToString:call.method]) {
+    if ([@"requestAuthorization" isEqualToString:call.method]) {
         if (self.locationManager) {
             self.flutterResult = result;
             [self.locationManager requestAlwaysAuthorization];

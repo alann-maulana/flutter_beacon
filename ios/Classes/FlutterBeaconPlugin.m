@@ -46,6 +46,20 @@
         return;
     }
     
+    if ([@"requestAuthorization" isEqualToString:call.method]) {
+        self.flutterResult = result;
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        return;
+    }
+    
+    if ([@"openSettings" isEqualToString:call.method]) {
+        if (self.locationManager) {
+            self.flutterResult = result;
+            [self.locationManager requestAlwaysAuthorization];
+        }
+        return;
+    }
+    
     if ([@"close" isEqualToString:call.method]) {
         [self stopRangingBeacon];
         [self stopMonitoringBeacon];
@@ -157,11 +171,15 @@
 
 - (void) initializeWithResult:(FlutterResult)result {
     self.flutterResult = result;
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
+    if (!self.locationManager) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+    }
     
-    // Initialize central manager and detect bluetooth state
-    self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
+    if (!self.bluetoothManager) {
+        // Initialize central manager and detect bluetooth state
+        self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
+    }
 }
 
 ///------------------------------------------------------------

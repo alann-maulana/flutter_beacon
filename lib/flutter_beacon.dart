@@ -64,6 +64,14 @@ class FlutterBeacon {
     await _methodChannel.invokeMethod('initialize');
   }
 
+  Future<void> get requestAuthorization async {
+    await _methodChannel.invokeMethod('requestAuthorization');
+  }
+
+  Future<void> get openSettings async {
+    await _methodChannel.invokeMethod('openSettings');
+  }
+
   /// Close scanning API.
   Future<void> get close async {
     await _methodChannel.invokeMethod('close');

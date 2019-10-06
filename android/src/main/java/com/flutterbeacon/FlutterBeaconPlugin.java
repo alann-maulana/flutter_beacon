@@ -94,6 +94,26 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       return;
     }
 
+    if (call.method.equals("requestAuthorization")) {
+      this.flutterResult = result;
+      if (!checkLocationServicesPermission()) {
+        ActivityCompat.requestPermissions(registrar.activity(), new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        }, REQUEST_CODE_LOCATION);
+      }
+      return;
+    }
+
+    if (call.method.equals("openSettings")) {
+      this.flutterResult = result;
+      if (!checkBluetoothPoweredOn()) {
+        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        registrar.activity().startActivityForResult(intent, REQUEST_CODE_BLUETOOTH);
+        return;
+      }
+      return;
+    }
+
     if (call.method.equals("state")) {
       try {
         boolean flag = checkBluetoothPoweredOn();

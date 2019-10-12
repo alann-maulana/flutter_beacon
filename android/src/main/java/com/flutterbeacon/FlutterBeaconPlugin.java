@@ -192,10 +192,21 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   // endregion
 
   private EventChannel.StreamHandler bluetoothStateChangeStreamHandler = new EventChannel.StreamHandler() {
+    @SuppressLint("MissingPermission")
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
+      int state = BluetoothAdapter.STATE_OFF;
+
+      BluetoothManager bluetoothManager = (BluetoothManager)
+          registrar.activeContext().getSystemService(Context.BLUETOOTH_SERVICE);
+      if (bluetoothManager != null) {
+        BluetoothAdapter adapter = bluetoothManager.getAdapter();
+        if (adapter != null) {
+          state = adapter.getState();
+        }
+      }
+      mReceiver.setEventSink(eventSink, state);
       IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-      mReceiver.setEventSink(eventSink);
       registrar.activity().registerReceiver(mReceiver, filter);
     }
 

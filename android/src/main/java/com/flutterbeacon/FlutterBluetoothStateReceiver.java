@@ -12,8 +12,9 @@ class FlutterBluetoothStateReceiver extends BroadcastReceiver {
 
   public FlutterBluetoothStateReceiver() { }
 
-  public void setEventSink(EventChannel.EventSink eventSink) {
+  public void setEventSink(EventChannel.EventSink eventSink, int currentState) {
     this.eventSink = eventSink;
+    sendState(currentState);
   }
 
   @Override
@@ -23,23 +24,27 @@ class FlutterBluetoothStateReceiver extends BroadcastReceiver {
 
     if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
       final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-      switch (state) {
-        case BluetoothAdapter.STATE_OFF:
-          eventSink.success("STATE_OFF");
-          break;
-        case BluetoothAdapter.STATE_TURNING_OFF:
-          eventSink.success("STATE_TURNING_OFF");
-          break;
-        case BluetoothAdapter.STATE_ON:
-          eventSink.success("STATE_ON");
-          break;
-        case BluetoothAdapter.STATE_TURNING_ON:
-          eventSink.success("STATE_TURNING_ON");
-          break;
-        default:
-          eventSink.error("BLUETOOTH_STATE", "invalid bluetooth adapter state", null);
-          break;
-      }
+      sendState(state);
+    }
+  }
+
+  private void sendState(int state) {
+    switch (state) {
+      case BluetoothAdapter.STATE_OFF:
+        eventSink.success("STATE_OFF");
+        break;
+      case BluetoothAdapter.STATE_TURNING_OFF:
+        eventSink.success("STATE_TURNING_OFF");
+        break;
+      case BluetoothAdapter.STATE_ON:
+        eventSink.success("STATE_ON");
+        break;
+      case BluetoothAdapter.STATE_TURNING_ON:
+        eventSink.success("STATE_TURNING_ON");
+        break;
+      default:
+        eventSink.error("BLUETOOTH_STATE", "invalid bluetooth adapter state", null);
+        break;
     }
   }
 }

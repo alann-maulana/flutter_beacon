@@ -7,6 +7,7 @@
 
 #import "FBBluetoothStateHandler.h"
 #import <FlutterBeaconPlugin.h>
+#import <CoreBluetooth/CoreBluetooth.h>
 
 @implementation FBBluetoothStateHandler
 
@@ -30,9 +31,13 @@
 }
 
 - (FlutterError * _Nullable)onListenWithArguments:(id _Nullable)arguments eventSink:(nonnull FlutterEventSink)events {
+    // initialize central manager if it itsn't
+    [self.instance initializeCentralManager];
+    
     if (self.instance) {
         self.instance.flutterEventSinkBluetooth = events;
     }
+    
     return nil;
 }
 

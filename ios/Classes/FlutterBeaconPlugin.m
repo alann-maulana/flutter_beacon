@@ -75,10 +75,7 @@
     }
     
     if ([@"state" isEqualToString:call.method]) {
-        if (!self.bluetoothManager) {
-            // initialize central manager if it itsn't
-            self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
-        }
+        [self initializeCentralManager];
         
         switch(self.bluetoothManager.state) {
             case CBManagerStateUnknown:
@@ -104,6 +101,21 @@
     }
     
     result(FlutterMethodNotImplemented);
+}
+
+- (void) initializeCentralManager {
+    if (!self.bluetoothManager) {
+        // initialize central manager if it itsn't
+        self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
+    }
+}
+
+- (void) initializeLocationManager {
+    if (!self.locationManager) {
+        // initialize location manager if it itsn't
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+    }
 }
 
 ///------------------------------------------------------------
@@ -178,15 +190,9 @@
 
 - (void) initializeWithResult:(FlutterResult)result {
     self.flutterResult = result;
-    if (!self.locationManager) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.delegate = self;
-    }
     
-    if (!self.bluetoothManager) {
-        // Initialize central manager and detect bluetooth state
-        self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
-    }
+    [self initializeLocationManager];
+    [self initializeCentralManager];
 }
 
 ///------------------------------------------------------------

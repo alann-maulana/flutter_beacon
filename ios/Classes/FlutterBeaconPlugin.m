@@ -2,6 +2,7 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreLocation/CoreLocation.h>
 #import "FBUtils.h"
+#import "FBBluetoothStateHandler.h"
 #import "FBRangingStreamHandler.h"
 #import "FBMonitoringStreamHandler.h"
 
@@ -14,7 +15,7 @@
 
 @property (strong, nonatomic) FBRangingStreamHandler* rangingHandler;
 @property (strong, nonatomic) FBMonitoringStreamHandler* monitoringHandler;
-@property (strong, nonatomic) FBMonitoringStreamHandler* bluetoothHandler;
+@property (strong, nonatomic) FBBluetoothStateHandler* bluetoothHandler;
 
 @property FlutterResult flutterResult;
 
@@ -38,6 +39,12 @@
     [FlutterEventChannel eventChannelWithName:@"flutter_beacon_event_monitoring"
                               binaryMessenger:[registrar messenger]];
     [streamChannelMonitoring setStreamHandler:instance.monitoringHandler];
+    
+    instance.bluetoothHandler = [[FBBluetoothStateHandler alloc] initWithFlutterBeaconPlugin:instance];
+    FlutterEventChannel* streamChannelBluetooth =
+    [FlutterEventChannel eventChannelWithName:@"flutter_bluetooth_state_changed"
+                              binaryMessenger:[registrar messenger]];
+    [streamChannelBluetooth setStreamHandler:instance.bluetoothHandler];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {

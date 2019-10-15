@@ -1,4 +1,4 @@
-//  Copyright (c) 2018 Alann Maulana.
+//  Copyright (c) 2018 Eyro Labs.
 //  Licensed under Apache License v2.0 that can be
 //  found in the LICENSE file.
 

@@ -12,9 +12,11 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -85,6 +87,10 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     final EventChannel eventChannelBluetoothState =
         new EventChannel(registrar.messenger(), "flutter_bluetooth_state_changed");
     eventChannelBluetoothState.setStreamHandler(instance.bluetoothStateChangeStreamHandler);
+
+    final EventChannel eventChannelAuthorizationStatus =
+        new EventChannel(registrar.messenger(), "flutter_authorization_status_changed");
+    eventChannelBluetoothState.setStreamHandler(null);
   }
 
   @Override
@@ -94,34 +100,65 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       return;
     }
 
-    if (call.method.equals("requestAuthorization")) {
-      this.flutterResult = result;
-      if (!checkLocationServicesPermission()) {
-        ActivityCompat.requestPermissions(registrar.activity(), new String[]{
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        }, REQUEST_CODE_LOCATION);
-      }
+    if (call.method.equals("initializeAndCheck")) {
+      initializeAndCheck(result);
       return;
     }
 
-    if (call.method.equals("openSettings")) {
-      this.flutterResult = result;
-      if (!checkBluetoothPoweredOn()) {
-        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        registrar.activity().startActivityForResult(intent, REQUEST_CODE_BLUETOOTH);
-        return;
-      }
+    if (call.method.equals("authorizationStatus")) {
+      result.success(checkLocationServicesPermission() ? "ALLOWED" : "DENIED");
       return;
     }
 
-    if (call.method.equals("state")) {
+    if (call.method.equals("checkLocationServicesIfEnabled")) {
+      result.success(checkLocationServicesIfEnabled());
+      return;
+    }
+
+    if (call.method.equals("bluetoothState")) {
       try {
-        boolean flag = checkBluetoothPoweredOn();
+        boolean flag = checkBluetoothIfEnabled();
         result.success(flag ? "STATE_ON" : "STATE_OFF");
       } catch (RuntimeException ignored) {
         result.success("STATE_UNSUPPORTED");
       }
       return;
+    }
+
+    if (call.method.equals("requestAuthorization")) {
+      if (!checkLocationServicesPermission()) {
+        this.flutterResult = result;
+        ActivityCompat.requestPermissions(registrar.activity(), new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        }, REQUEST_CODE_LOCATION);
+      } else {
+        result.success(true);
+      }
+      return;
+    }
+
+    if (call.method.equals("openBluetoothSettings")) {
+      if (!checkBluetoothIfEnabled()) {
+        this.flutterResult = result;
+        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        registrar.activity().startActivityForResult(intent, REQUEST_CODE_BLUETOOTH);
+        return;
+      } else {
+        result.success(true);
+      }
+      return;
+    }
+
+    if (call.method.equals("openLocationSettings")) {
+      Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+      registrar.activity().startActivity(intent);
+      result.success(true);
+      return;
+    }
+
+    //noinspection StatementWithEmptyBody
+    if (call.method.equals("openApplicationSettings")) {
+      // not implemented
     }
 
     if (call.method.equals("close")) {
@@ -139,14 +176,25 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     result.notImplemented();
   }
 
-  private void initialize(Result result) {
+  private void initialize(@Nullable Result result) {
     beaconManager = BeaconManager.getInstanceForApplication(registrar.activity());
     if (!beaconManager.getBeaconParsers().contains(iBeaconLayout)) {
       beaconManager.getBeaconParsers().clear();
       beaconManager.getBeaconParsers().add(iBeaconLayout);
     }
+    if (beaconManager != null && !beaconManager.isBound(beaconConsumer)) {
+      beaconManager.bind(beaconConsumer);
+    }
 
-    if (checkLocationServicesPermission() && checkBluetoothPoweredOn()) {
+    if (result != null) {
+      result.success(true);
+    }
+  }
+
+  private void initializeAndCheck(Result result) {
+    initialize(null);
+
+    if (checkLocationServicesPermission() && checkBluetoothIfEnabled()) {
       if (result != null) {
         result.success(true);
         return;
@@ -154,7 +202,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     }
 
     flutterResult = result;
-    if (!checkBluetoothPoweredOn()) {
+    if (!checkBluetoothIfEnabled()) {
       Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
       registrar.activity().startActivityForResult(intent, REQUEST_CODE_BLUETOOTH);
       return;
@@ -177,8 +225,21 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     return true;
   }
 
+  private boolean checkLocationServicesIfEnabled() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      try {
+        return Settings.Secure.LOCATION_MODE_OFF !=
+            Settings.Secure.getInt(registrar.activity().getContentResolver(), Settings.Secure.LOCATION_MODE);
+      } catch (Settings.SettingNotFoundException ignored) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   @SuppressLint("MissingPermission")
-  private boolean checkBluetoothPoweredOn() {
+  private boolean checkBluetoothIfEnabled() {
     BluetoothManager bluetoothManager = (BluetoothManager)
         registrar.activeContext().getSystemService(Context.BLUETOOTH_SERVICE);
     if (bluetoothManager == null) {

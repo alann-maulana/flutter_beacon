@@ -1,4 +1,4 @@
-//  Copyright (c) 2018 Alann Maulana.
+//  Copyright (c) 2018 Eyro Labs.
 //  Licensed under Apache License v2.0 that can be
 //  found in the LICENSE file.
 
@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 
 part 'beacon/beacon.dart';
 part 'beacon/bluetooth_state.dart';
+part 'beacon/authorization_status.dart';
 part 'beacon/monitoring_result.dart';
 part 'beacon/ranging_result.dart';
 part 'beacon/region.dart';
@@ -42,6 +43,11 @@ class FlutterBeacon {
   static const EventChannel _bluetoothStateChangedChannel =
       EventChannel('flutter_bluetooth_state_changed');
 
+  /// Event Channel used to communicate to native code to checking
+  /// for bluetooth state changed.
+  static const EventChannel _authorizationStatusChangedChannel =
+      EventChannel('flutter_authorization_status_changed');
+
   /// This information does not change from call to call. Cache it.
   Stream<RangingResult> _onRanging;
 
@@ -50,6 +56,9 @@ class FlutterBeacon {
 
   /// This information does not change from call to call. Cache it.
   Stream<BluetoothState> _onBluetoothState;
+
+  /// This information does not change from call to call. Cache it.
+  Stream<AuthorizationStatus> _onAuthorizationStatus;
 
   /// Initialize scanning API.
   ///
@@ -64,12 +73,34 @@ class FlutterBeacon {
     await _methodChannel.invokeMethod('initialize');
   }
 
+  Future<void> get initializeAndCheckScanning async {
+    await _methodChannel.invokeMethod('initializeAndCheck');
+  }
+
+  Future<AuthorizationStatus> get authorizationStatus async {
+    final status = await _methodChannel.invokeMethod('authorizationStatus');
+    return AuthorizationStatus.parse(status);
+  }
+
+  Future<bool> get checkLocationServicesIfEnabled async {
+    return await _methodChannel.invokeMethod('checkLocationServicesIfEnabled');
+  }
+
+  Future<BluetoothState> get bluetoothState async {
+    final status = await _methodChannel.invokeMethod('bluetoothState');
+    return BluetoothState.parse(status);
+  }
+
   Future<void> get requestAuthorization async {
     await _methodChannel.invokeMethod('requestAuthorization');
   }
 
-  Future<void> get openSettings async {
-    await _methodChannel.invokeMethod('openSettings');
+  Future<void> get openBluetoothSettings async {
+    await _methodChannel.invokeMethod('openBluetoothSettings');
+  }
+
+  Future<void> get openLocationSettings async {
+    await _methodChannel.invokeMethod('openLocationSettings');
   }
 
   /// Close scanning API.
@@ -113,5 +144,18 @@ class FlutterBeacon {
           .map((dynamic event) => BluetoothState.parse(event));
     }
     return _onBluetoothState;
+  }
+
+  /// Start checking for location service authorization status changed.
+  /// This stream only enabled on iOS only.
+  ///
+  /// This will fires [AuthorizationStatus] whenever authorization status changed.
+  Stream<AuthorizationStatus> authorizationStatusChanged() {
+    if (_onAuthorizationStatus == null) {
+      _onAuthorizationStatus = _authorizationStatusChangedChannel
+          .receiveBroadcastStream()
+          .map((dynamic event) => AuthorizationStatus.parse(event));
+    }
+    return _onAuthorizationStatus;
   }
 }

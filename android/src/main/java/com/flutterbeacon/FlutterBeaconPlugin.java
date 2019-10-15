@@ -90,7 +90,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
     final EventChannel eventChannelAuthorizationStatus =
         new EventChannel(registrar.messenger(), "flutter_authorization_status_changed");
-    eventChannelBluetoothState.setStreamHandler(null);
+    eventChannelAuthorizationStatus.setStreamHandler(null);
   }
 
   @Override

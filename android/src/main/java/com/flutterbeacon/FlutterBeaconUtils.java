@@ -60,11 +60,15 @@ class FlutterBeaconUtils {
     return map;
   }
 
-  static Region regionFromMap(Map<String, Object> map) {
+  static Region regionFromMap(Map map) {
+    String identifier = "";
     Identifier id1 = null, id2 = null, id3 = null;
 
-    //noinspection ConstantConditions
-    String identifier = map.get("identifier").toString();
+    Object objectIdentifier = map.get("identifier");
+    if (objectIdentifier instanceof String) {
+      identifier = objectIdentifier.toString();
+    }
+
     Object proximityUUID = map.get("proximityUUID");
 
     if (proximityUUID instanceof String) {

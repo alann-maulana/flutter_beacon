@@ -62,7 +62,7 @@ class FlutterBeaconUtils {
 
   static Region regionFromMap(Map map) {
     String identifier = "";
-    Identifier id1 = null, id2 = null, id3 = null;
+    List<Identifier> identifiers = new ArrayList<>();
 
     Object objectIdentifier = map.get("identifier");
     if (objectIdentifier instanceof String) {
@@ -72,18 +72,18 @@ class FlutterBeaconUtils {
     Object proximityUUID = map.get("proximityUUID");
 
     if (proximityUUID instanceof String) {
-      id1 = Identifier.parse((String) proximityUUID);
+      identifiers.add(Identifier.parse((String) proximityUUID));
     }
 
     Object major = map.get("major");
     if (major instanceof Integer) {
-      id2 = Identifier.fromInt((Integer) major);
+      identifiers.add(Identifier.fromInt((Integer) major));
     }
     Object minor = map.get("minor");
     if (minor instanceof Integer) {
-      id3 = Identifier.fromInt((Integer) minor);
+      identifiers.add(Identifier.fromInt((Integer) minor));
     }
 
-    return new Region(identifier, id1, id2, id3);
+    return new Region(identifier, identifiers);
   }
 }

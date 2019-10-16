@@ -41,6 +41,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import io.flutter.view.FlutterNativeView;
 
 public class FlutterBeaconPlugin implements MethodCallHandler,
     PluginRegistry.RequestPermissionsResultListener,
@@ -55,7 +56,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   private final Registrar registrar;
   private final FlutterBluetoothStateReceiver mReceiver = new FlutterBluetoothStateReceiver();
   private BeaconManager beaconManager;
-  private Result flutterResult;
+  private Result flutterResult, flutterResultBluetooth;
   private EventChannel.EventSink eventSinkRanging, eventSinkMonitoring;
   private List<Region> regionRanging;
   private List<Region> regionMonitoring;
@@ -100,9 +101,10 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       if (beaconManager != null && !beaconManager.isBound(beaconConsumer)) {
         this.flutterResult = result;
         this.beaconManager.bind(beaconConsumer);
-      } else {
-        result.success(true);
+        return;
       }
+
+      result.success(true);
       return;
     }
 
@@ -125,9 +127,12 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       try {
         boolean flag = checkBluetoothIfEnabled();
         result.success(flag ? "STATE_ON" : "STATE_OFF");
+        return;
       } catch (RuntimeException ignored) {
-        result.success("STATE_UNSUPPORTED");
+
       }
+
+      result.success("STATE_UNSUPPORTED");
       return;
     }
 
@@ -135,20 +140,21 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       if (!checkLocationServicesPermission()) {
         this.flutterResult = result;
         requestAuthorization();
-      } else {
-        result.success(true);
+        return;
       }
+
+      result.success(true);
       return;
     }
 
     if (call.method.equals("openBluetoothSettings")) {
       if (!checkBluetoothIfEnabled()) {
-        this.flutterResult = result;
+        this.flutterResultBluetooth = result;
         openBluetoothSettings();
         return;
-      } else {
-        result.success(true);
       }
+
+      result.success(true);
       return;
     }
 
@@ -165,7 +171,9 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
     if (call.method.equals("close")) {
       if (beaconManager != null) {
+        stopRanging();
         beaconManager.removeAllRangeNotifiers();
+        stopMonitoring();
         beaconManager.removeAllMonitorNotifiers();
         if (beaconManager.isBound(beaconConsumer)) {
           beaconManager.unbind(beaconConsumer);
@@ -311,6 +319,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     public void onBeaconServiceConnect() {
       if (FlutterBeaconPlugin.this.flutterResult != null) {
         FlutterBeaconPlugin.this.flutterResult.success(true);
+        FlutterBeaconPlugin.this.flutterResult = null;
       } else {
         startRanging();
         startMonitoring();
@@ -337,17 +346,18 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   private final EventChannel.StreamHandler rangingStreamHandler = new EventChannel.StreamHandler() {
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
+      Log.d("RANGING", "Start ranging = " + o);
       startRanging(o, eventSink);
     }
 
     @Override
     public void onCancel(Object o) {
+      Log.d("RANGING", "Stop ranging = " + o);
       stopRanging();
     }
   };
 
   private void startRanging(Object o, EventChannel.EventSink eventSink) {
-    Log.d(TAG, "START RANGING=" + o);
     if (o instanceof List) {
       List list = (List) o;
       if (regionRanging == null) {
@@ -564,13 +574,19 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       if (!checkLocationServicesPermission()) {
         requestAuthorization();
       } else {
-        if (flutterResult != null) {
+        if (flutterResultBluetooth != null) {
+          flutterResultBluetooth.success(true);
+          flutterResultBluetooth = null;
+        } else if (flutterResult != null) {
           flutterResult.success(true);
           flutterResult = null;
         }
       }
     } else {
-      if (flutterResult != null) {
+      if (flutterResultBluetooth != null) {
+        flutterResultBluetooth.error("Beacon", "bluetooth disabled", null);
+        flutterResultBluetooth = null;
+      } else if (flutterResult != null) {
         flutterResult.error("Beacon", "bluetooth disabled", null);
         flutterResult = null;
       }

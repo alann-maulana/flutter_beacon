@@ -20,6 +20,7 @@
 @property (strong, nonatomic) FBAuthorizationStatusHandler* authorizationHandler;
 
 @property FlutterResult flutterResult;
+@property FlutterResult flutterBluetoothResult;
 
 @end
 
@@ -97,28 +98,35 @@
     }
     
     if ([@"bluetoothState" isEqualToString:call.method]) {
+        self.flutterBluetoothResult = result;
         [self initializeCentralManager];
         
-        switch(self.bluetoothManager.state) {
-            case CBManagerStateUnknown:
-                result(@"STATE_UNKNOWN");
-                break;
-            case CBManagerStateResetting:
-                result(@"STATE_RESETTING");
-                break;
-            case CBManagerStateUnsupported:
-                result(@"STATE_UNSUPPORTED");
-                break;
-            case CBManagerStateUnauthorized:
-                result(@"STATE_UNAUTHORIZED");
-                break;
-            case CBManagerStatePoweredOff:
-                result(@"STATE_OFF");
-                break;
-            case CBManagerStatePoweredOn:
-                result(@"STATE_ON");
-                break;
-        }
+        // Delay 2 seconds
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (self.flutterBluetoothResult) {
+                switch(self.bluetoothManager.state) {
+                    case CBManagerStateUnknown:
+                        self.flutterBluetoothResult(@"STATE_UNKNOWN");
+                        break;
+                    case CBManagerStateResetting:
+                        self.flutterBluetoothResult(@"STATE_RESETTING");
+                        break;
+                    case CBManagerStateUnsupported:
+                        self.flutterBluetoothResult(@"STATE_UNSUPPORTED");
+                        break;
+                    case CBManagerStateUnauthorized:
+                        self.flutterBluetoothResult(@"STATE_UNAUTHORIZED");
+                        break;
+                    case CBManagerStatePoweredOff:
+                        self.flutterBluetoothResult(@"STATE_OFF");
+                        break;
+                    case CBManagerStatePoweredOn:
+                        self.flutterBluetoothResult(@"STATE_ON");
+                        break;
+                }
+                self.flutterBluetoothResult = nil;
+            }
+        });
         return;
     }
     
@@ -256,36 +264,66 @@
     NSString *message = nil;
     switch(central.state) {
         case CBManagerStateUnknown:
+            if (self.flutterBluetoothResult) {
+                self.flutterBluetoothResult(@"STATE_UNKNOWN");
+                self.flutterBluetoothResult = nil;
+                return;
+            }
             message = @"CBManagerStateUnknown";
             if (self.flutterEventSinkBluetooth) {
                 self.flutterEventSinkBluetooth(@"STATE_UNKNOWN");
             }
             break;
         case CBManagerStateResetting:
+            if (self.flutterBluetoothResult) {
+                self.flutterBluetoothResult(@"STATE_RESETTING");
+                self.flutterBluetoothResult = nil;
+                return;
+            }
             message = @"CBManagerStateResetting";
             if (self.flutterEventSinkBluetooth) {
                 self.flutterEventSinkBluetooth(@"STATE_RESETTING");
             }
             break;
         case CBManagerStateUnsupported:
+            if (self.flutterBluetoothResult) {
+                self.flutterBluetoothResult(@"STATE_UNSUPPORTED");
+                self.flutterBluetoothResult = nil;
+                return;
+            }
             message = @"CBManagerStateUnsupported";
             if (self.flutterEventSinkBluetooth) {
                 self.flutterEventSinkBluetooth(@"STATE_UNSUPPORTED");
             }
             break;
         case CBManagerStateUnauthorized:
+            if (self.flutterBluetoothResult) {
+                self.flutterBluetoothResult(@"STATE_UNAUTHORIZED");
+                self.flutterBluetoothResult = nil;
+                return;
+            }
             message = @"CBManagerStateUnauthorized";
             if (self.flutterEventSinkBluetooth) {
                 self.flutterEventSinkBluetooth(@"STATE_UNAUTHORIZED");
             }
             break;
         case CBManagerStatePoweredOff:
+            if (self.flutterBluetoothResult) {
+                self.flutterBluetoothResult(@"STATE_OFF");
+                self.flutterBluetoothResult = nil;
+                return;
+            }
             message = @"CBManagerStatePoweredOff";
             if (self.flutterEventSinkBluetooth) {
                 self.flutterEventSinkBluetooth(@"STATE_OFF");
             }
             break;
         case CBManagerStatePoweredOn:
+            if (self.flutterBluetoothResult) {
+                self.flutterBluetoothResult(@"STATE_ON");
+                self.flutterBluetoothResult = nil;
+                return;
+            }
             if (self.flutterEventSinkBluetooth) {
                 self.flutterEventSinkBluetooth(@"STATE_ON");
             }

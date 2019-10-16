@@ -21,7 +21,7 @@ class AuthorizationStatus {
         return allowed;
       case 'ALWAYS':
         return always;
-      case 'WHEN_IN_USER':
+      case 'WHEN_IN_USE':
         return whenInUse;
       case 'DENIED':
         return denied;
@@ -47,7 +47,7 @@ class AuthorizationStatus {
   );
 
   static const AuthorizationStatus whenInUse = AuthorizationStatus._(
-    'WHEN_IN_USER',
+    'WHEN_IN_USE',
     isAndroid: false,
     isIOS: true,
   );

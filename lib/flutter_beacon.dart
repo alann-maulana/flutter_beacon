@@ -103,6 +103,10 @@ class FlutterBeacon {
     await _methodChannel.invokeMethod('openLocationSettings');
   }
 
+  Future<void> get openApplicationSettings async {
+    await _methodChannel.invokeMethod('openApplicationSettings');
+  }
+
   /// Close scanning API.
   Future<void> get close async {
     await _methodChannel.invokeMethod('close');

@@ -86,7 +86,7 @@
                 result(@"ALWAYS");
                 break;
             case kCLAuthorizationStatusAuthorizedWhenInUse:
-                result(@"WHEN_IN_USER");
+                result(@"WHEN_IN_USE");
                 break;
         }
         return;

@@ -31,7 +31,7 @@ class MonitoringResult {
   MonitoringResult._from(dynamic json)
       : this.monitoringEventType = _parseMonitoringEventType(json['event']),
         this.monitoringState = _parseMonitoringState(json['state']),
-        this.region = Region._fromJson(json['region']);
+        this.region = Region.fromJson(json['region']);
 
   /// Parsing dynamic state into [MonitoringState].
   static MonitoringState _parseMonitoringState(dynamic state) {

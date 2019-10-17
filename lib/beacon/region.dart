@@ -35,7 +35,7 @@ class Region {
   }
 
   /// Constructor for deserialize json [Map] into [Region] object.
-  Region._fromJson(dynamic json)
+  Region.fromJson(dynamic json)
       : identifier = json['identifier'],
         proximityUUID = json['proximityUUID'],
         major = json['major'],

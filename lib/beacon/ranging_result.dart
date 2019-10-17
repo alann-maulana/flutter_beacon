@@ -14,7 +14,7 @@ class RangingResult {
 
   /// Constructor for deserialize dynamic json into [RangingResult].
   RangingResult._from(dynamic json)
-      : region = Region._fromJson(json['region']),
+      : region = Region.fromJson(json['region']),
         beacons = Beacon.beaconFromArray(json['beacons']);
 
   @override

@@ -38,8 +38,8 @@ class Region {
   Region.fromJson(dynamic json)
       : identifier = json['identifier'],
         proximityUUID = json['proximityUUID'],
-        major = json['major'],
-        minor = json['minor'];
+        major = _parseMajorMinor(json['major']),
+        minor = _parseMajorMinor(json['minor']);
 
   /// Serialize [Region] object into json [Map].
   dynamic get toJson {
@@ -71,4 +71,20 @@ class Region {
 
   @override
   int get hashCode => identifier.hashCode;
+
+  static _parseMajorMinor(dynamic number) {
+    if (number is int) {
+      return number;
+    }
+
+    if (number is num) {
+      return number.toInt();
+    }
+
+    if (number is String) {
+      return int.tryParse(number);
+    }
+
+    return null;
+  }
 }

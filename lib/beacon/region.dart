@@ -87,4 +87,9 @@ class Region {
 
     return null;
   }
+
+  @override
+  String toString() {
+    return json.encode(toJson);
+  }
 }

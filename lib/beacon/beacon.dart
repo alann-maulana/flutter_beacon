@@ -37,15 +37,15 @@ class Beacon {
   /// The proximity of beacon.
   final Proximity _proximity;
 
-  const Beacon(
-      {this.proximityUUID,
-      this.macAddress,
-      this.major,
-      this.minor,
-      this.rssi,
-      this.txPower,
-      this.accuracy})
-      : this._proximity = null;
+  const Beacon({
+    this.proximityUUID,
+    this.macAddress,
+    this.major,
+    this.minor,
+    this.rssi,
+    this.txPower,
+    this.accuracy,
+  }) : this._proximity = null;
 
   /// Create beacon object from json.
   Beacon.fromJson(dynamic json)
@@ -164,5 +164,30 @@ class Beacon {
     }
 
     return Proximity.far;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Beacon &&
+          runtimeType == other.runtimeType &&
+          proximityUUID == other.proximityUUID &&
+          major == other.major &&
+          minor == other.minor &&
+          (Platform.isAndroid ? macAddress == other.macAddress : true);
+
+  @override
+  int get hashCode {
+    int hashCode = proximityUUID.hashCode ^ major.hashCode ^ minor.hashCode;
+    if (Platform.isAndroid) {
+      hashCode = hashCode ^ macAddress.hashCode;
+    }
+
+    return hashCode;
+  }
+
+  @override
+  String toString() {
+    return json.encode(toJson);
   }
 }

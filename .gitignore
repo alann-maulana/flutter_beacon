@@ -216,4 +216,8 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
+# Test, Coverage
+coverage
+test/.test_coverage.dart
+
 # End of https://www.gitignore.io/api/dart,flutter,androidstudio,visualstudiocode

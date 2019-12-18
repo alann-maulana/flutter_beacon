@@ -1,6 +1,7 @@
 # flutter_beacon
 
 [![Pub](https://img.shields.io/pub/v/flutter_beacon.svg)](https://pub.dartlang.org/packages/flutter_beacon) [![GitHub](https://img.shields.io/github/license/alann-maulana/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon?ref=badge_shield)
 
 [Flutter plugin](https://pub.dartlang.org/packages/flutter_beacon/) to work with iBeacons.  
 
@@ -134,3 +135,5 @@ Flutter Beacon plugin is developed by Alann Maulana. You can contact me at <kang
 ## License
 
 Apache License 2.0
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon?ref=badge_large)

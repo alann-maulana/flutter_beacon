@@ -542,9 +542,13 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   // region ACTIVITY CALLBACK
   @Override
   public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    if (requestCode != REQUEST_CODE_LOCATION) {
+      return false;
+    }
+
     boolean locationServiceAllowed = false;
-    String permission = permissions[0];
-    if (requestCode == REQUEST_CODE_LOCATION && grantResults.length > 0) {
+    if (permissions.length > 0 && grantResults.length > 0) {
+      String permission = permissions[0];
       if (!ActivityCompat.shouldShowRequestPermissionRationale(registrar.activity(), permission)) {
         int grantResult = grantResults[0];
         if (grantResult == PackageManager.PERMISSION_GRANTED) {

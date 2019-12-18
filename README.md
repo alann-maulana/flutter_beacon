@@ -51,6 +51,10 @@ Permission must be declared in `ios/Runner/Info.plist`:
   <!-- for iOS 9/10 -->
   <key>NSLocationAlwaysUsageDescription</key>
   <string>Reason why app needs location</string>
+  <!-- Bluetooth Privacy -->
+  <!-- for iOS 13 + -->
+  <key>NSBluetoothAlwaysUsageDescription</key>
+  <string>Reason why app needs bluetooth</string>
 </dict>
 ```
 

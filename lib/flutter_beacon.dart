@@ -69,12 +69,12 @@ class FlutterBeacon {
   /// For iOS, it will check whether Bluetooth is enabled,
   /// requestWhenInUse location services and check
   /// whether location services is enabled.
-  Future<void> get initializeScanning async {
-    await _methodChannel.invokeMethod('initialize');
+  Future<bool> get initializeScanning async {
+    return await _methodChannel.invokeMethod('initialize');
   }
 
-  Future<void> get initializeAndCheckScanning async {
-    await _methodChannel.invokeMethod('initializeAndCheck');
+  Future<bool> get initializeAndCheckScanning async {
+    return await _methodChannel.invokeMethod('initializeAndCheck');
   }
 
   Future<AuthorizationStatus> get authorizationStatus async {

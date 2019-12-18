@@ -1,6 +1,6 @@
-# flutter_beacon
+# Flutter Beacon
 
-[![Pub](https://img.shields.io/pub/v/flutter_beacon.svg)](https://pub.dartlang.org/packages/flutter_beacon) [![GitHub](https://img.shields.io/github/license/alann-maulana/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE)
+[![Pub](https://img.shields.io/pub/v/flutter_beacon.svg)](https://pub.dartlang.org/packages/flutter_beacon) [![GitHub](https://img.shields.io/github/license/alann-maulana/flutter_beacon.svg?color=2196F3)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE) [![Build Status](https://travis-ci.org/alann-maulana/flutter_beacon.svg?branch=master)](https://travis-ci.org/alann-maulana/flutter_beacon) [![Coverage Status](https://coveralls.io/repos/github/alann-maulana/flutter_beacon/badge.svg?branch=master)](https://coveralls.io/github/alann-maulana/flutter_beacon?branch=master)  [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon?ref=badge_shield)  
 
 [Flutter plugin](https://pub.dartlang.org/packages/flutter_beacon/) to work with iBeacons.  
 
@@ -18,7 +18,7 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_beacon: ^0.2.4
+  flutter_beacon: latest
 ```
 
 ### Setup specific for Android
@@ -128,9 +128,4 @@ _streamMonitoring.cancel();
 
 # Author
 
-Flutter Beacon plugin is developed by Alann Maulana. You can contact me at <kangmas.alan@gmail.com>.
-
-
-## License
-
-Apache License 2.0
+Flutter Beacon plugin is developed by Eyro Labs. You can contact me at <maulana@cubeacon.com>.

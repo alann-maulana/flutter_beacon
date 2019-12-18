@@ -1,20 +1,21 @@
 package com.flutterbeacon;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import io.flutter.plugin.common.EventChannel;
 
-class FlutterBluetoothStateReceiver extends BroadcastReceiver {
+class FlutterBluetoothStateReceiver extends BroadcastReceiver implements EventChannel.StreamHandler {
+  private Context context;
   private EventChannel.EventSink eventSink;
 
-  public FlutterBluetoothStateReceiver() { }
-
-  public void setEventSink(EventChannel.EventSink eventSink, int currentState) {
-    this.eventSink = eventSink;
-    sendState(currentState);
+  public FlutterBluetoothStateReceiver(Context context) {
+    this.context = context;
   }
 
   @Override
@@ -46,5 +47,30 @@ class FlutterBluetoothStateReceiver extends BroadcastReceiver {
         eventSink.error("BLUETOOTH_STATE", "invalid bluetooth adapter state", null);
         break;
     }
+  }
+
+  @SuppressLint("MissingPermission")
+  @Override
+  public void onListen(Object o, EventChannel.EventSink eventSink) {
+    int state = BluetoothAdapter.STATE_OFF;
+
+    BluetoothManager bluetoothManager = (BluetoothManager)
+        context.getSystemService(Context.BLUETOOTH_SERVICE);
+    if (bluetoothManager != null) {
+      BluetoothAdapter adapter = bluetoothManager.getAdapter();
+      if (adapter != null) {
+        state = adapter.getState();
+      }
+    }
+    this.eventSink = eventSink;
+    this.sendState(state);
+
+    IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+    context.registerReceiver(this, filter);
+  }
+
+  @Override
+  public void onCancel(Object o) {
+    context.unregisterReceiver(this);
   }
 }

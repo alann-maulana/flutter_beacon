@@ -68,7 +68,11 @@ Ranging APIs are designed as reactive streams.
 
 ```dart
 try {
+  // if you want to manage manual checking about the required permissions
   await flutterBeacon.initializeScanning;
+  
+  // or if you want to include automatic checking permission
+  await flutterBeacon.initializeAndCheckScanning;
 } on PlatformException catch(e) {
   // library failed to initialize, check code and message
 }
@@ -80,6 +84,7 @@ try {
 final regions = <Region>[];
 
 if (Platform.isIOS) {
+  // iOS platform, at least set identifier and proximityUUID for region scanning
   regions.add(Region(
       identifier: 'Apple Airlocate',
       proximityUUID: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0'));
@@ -104,11 +109,12 @@ _streamRanging.cancel();
 final regions = <Region>[];
 
 if (Platform.isIOS) {
+  // iOS platform, at least set identifier and proximityUUID for region scanning
   regions.add(Region(
       identifier: 'Apple Airlocate',
       proximityUUID: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0'));
 } else {
-  // android platform, it can ranging out of beacon that filter all of Proximity UUID
+  // Android platform, it can ranging out of beacon that filter all of Proximity UUID
   regions.add(Region(identifier: 'com.beacon'));
 }
 
@@ -123,8 +129,8 @@ _streamMonitoring.cancel();
 
 ## Under the hood
 
-* iOS uses native iOS CoreLocation
-* Android uses the third-party library [android-beacon-library](https://github.com/AltBeacon/android-beacon-library) (Apache License 2.0)
+* iOS uses native Framework [CoreLocation](https://developer.apple.com/documentation/corelocation/)
+* Android uses the [Android-Beacon-Library](https://github.com/AltBeacon/android-beacon-library) ([Apache License 2.0](https://github.com/AltBeacon/android-beacon-library/blob/master/LICENSE))  
 
 # Author
 

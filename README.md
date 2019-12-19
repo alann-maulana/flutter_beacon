@@ -1,6 +1,6 @@
-# flutter_beacon
+# Flutter Beacon
 
-[![Pub](https://img.shields.io/pub/v/flutter_beacon.svg)](https://pub.dartlang.org/packages/flutter_beacon) [![GitHub](https://img.shields.io/github/license/alann-maulana/flutter_beacon.svg)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE)
+[![Pub](https://img.shields.io/pub/v/flutter_beacon.svg)](https://pub.dartlang.org/packages/flutter_beacon) [![GitHub](https://img.shields.io/github/license/alann-maulana/flutter_beacon.svg?color=2196F3)](https://github.com/alann-maulana/flutter_beacon/blob/master/LICENSE) [![Build Status](https://travis-ci.org/alann-maulana/flutter_beacon.svg?branch=master)](https://travis-ci.org/alann-maulana/flutter_beacon) [![Coverage Status](https://coveralls.io/repos/github/alann-maulana/flutter_beacon/badge.svg?branch=master)](https://coveralls.io/github/alann-maulana/flutter_beacon?branch=master)  [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Falann-maulana%2Fflutter_beacon?ref=badge_shield) [![codecov](https://codecov.io/gh/alann-maulana/flutter_beacon/branch/master/graph/badge.svg)](https://codecov.io/gh/alann-maulana/flutter_beacon) 
 
 [Flutter plugin](https://pub.dartlang.org/packages/flutter_beacon/) to work with iBeacons.  
 
@@ -18,7 +18,7 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_beacon: ^0.2.4
+  flutter_beacon: latest
 ```
 
 ### Setup specific for Android
@@ -68,7 +68,11 @@ Ranging APIs are designed as reactive streams.
 
 ```dart
 try {
+  // if you want to manage manual checking about the required permissions
   await flutterBeacon.initializeScanning;
+  
+  // or if you want to include automatic checking permission
+  await flutterBeacon.initializeAndCheckScanning;
 } on PlatformException catch(e) {
   // library failed to initialize, check code and message
 }
@@ -80,6 +84,7 @@ try {
 final regions = <Region>[];
 
 if (Platform.isIOS) {
+  // iOS platform, at least set identifier and proximityUUID for region scanning
   regions.add(Region(
       identifier: 'Apple Airlocate',
       proximityUUID: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0'));
@@ -104,11 +109,12 @@ _streamRanging.cancel();
 final regions = <Region>[];
 
 if (Platform.isIOS) {
+  // iOS platform, at least set identifier and proximityUUID for region scanning
   regions.add(Region(
       identifier: 'Apple Airlocate',
       proximityUUID: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0'));
 } else {
-  // android platform, it can ranging out of beacon that filter all of Proximity UUID
+  // Android platform, it can ranging out of beacon that filter all of Proximity UUID
   regions.add(Region(identifier: 'com.beacon'));
 }
 
@@ -123,14 +129,9 @@ _streamMonitoring.cancel();
 
 ## Under the hood
 
-* iOS uses native iOS CoreLocation
-* Android uses the third-party library [android-beacon-library](https://github.com/AltBeacon/android-beacon-library) (Apache License 2.0)
+* iOS uses native Framework [CoreLocation](https://developer.apple.com/documentation/corelocation/)
+* Android uses the [Android-Beacon-Library](https://github.com/AltBeacon/android-beacon-library) ([Apache License 2.0](https://github.com/AltBeacon/android-beacon-library/blob/master/LICENSE))  
 
 # Author
 
-Flutter Beacon plugin is developed by Alann Maulana. You can contact me at <kangmas.alan@gmail.com>.
-
-
-## License
-
-Apache License 2.0
+Flutter Beacon plugin is developed by Eyro Labs. You can contact me at <maulana@cubeacon.com>.

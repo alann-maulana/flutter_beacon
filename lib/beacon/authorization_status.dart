@@ -4,17 +4,25 @@
 
 part of flutter_beacon;
 
+/// Enum class for showing status about authorization.
 class AuthorizationStatus {
+  /// The defined [String] value of the authorization status.
   final String value;
+
+  /// This will `true` only if this authorization status suit Android system.
   final bool isAndroid;
+
+  /// This will `true` only if this authorization status suit iOS system.
   final bool isIOS;
 
-  const AuthorizationStatus._(
+  @visibleForTesting
+  const AuthorizationStatus.init(
     this.value, {
     this.isAndroid,
     this.isIOS,
   });
 
+  @visibleForTesting
   factory AuthorizationStatus.parse(String value) {
     switch (value) {
       case 'ALLOWED':
@@ -34,37 +42,53 @@ class AuthorizationStatus {
     return null;
   }
 
-  static const AuthorizationStatus allowed = AuthorizationStatus._(
+  /// Shows that user allowed the authorization.
+  ///
+  /// Only for Android
+  static const AuthorizationStatus allowed = AuthorizationStatus.init(
     'ALLOWED',
     isAndroid: true,
     isIOS: false,
   );
 
-  static const AuthorizationStatus always = AuthorizationStatus._(
+  /// Shows that user always authorize app.
+  ///
+  /// Only for iOS
+  static const AuthorizationStatus always = AuthorizationStatus.init(
     'ALWAYS',
     isAndroid: false,
     isIOS: true,
   );
 
-  static const AuthorizationStatus whenInUse = AuthorizationStatus._(
+  /// Shows that user authorize when in use app.
+  ///
+  /// Only for iOS
+  static const AuthorizationStatus whenInUse = AuthorizationStatus.init(
     'WHEN_IN_USE',
     isAndroid: false,
     isIOS: true,
   );
 
-  static const AuthorizationStatus denied = AuthorizationStatus._(
+  /// Shows that user denied authorization request.
+  static const AuthorizationStatus denied = AuthorizationStatus.init(
     'DENIED',
     isAndroid: true,
     isIOS: true,
   );
 
-  static const AuthorizationStatus restricted = AuthorizationStatus._(
+  /// Shows that authorization has been restricted by system.
+  ///
+  /// Only for iOS
+  static const AuthorizationStatus restricted = AuthorizationStatus.init(
     'RESTRICTED',
     isAndroid: false,
     isIOS: true,
   );
 
-  static const AuthorizationStatus notDetermined = AuthorizationStatus._(
+  /// Shows that authorization has not been determined by user.
+  ///
+  /// Only for iOS
+  static const AuthorizationStatus notDetermined = AuthorizationStatus.init(
     'NOT_DETERMINED',
     isAndroid: false,
     isIOS: true,

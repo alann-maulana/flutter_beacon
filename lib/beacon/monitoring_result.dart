@@ -28,18 +28,22 @@ class MonitoringResult {
   final Region region;
 
   /// Constructor for deserialize dynamic json into [MonitoringResult].
-  MonitoringResult._from(dynamic json)
+  MonitoringResult.from(dynamic json)
       : this.monitoringEventType = _parseMonitoringEventType(json['event']),
         this.monitoringState = _parseMonitoringState(json['state']),
         this.region = Region.fromJson(json['region']);
 
   /// Parsing dynamic state into [MonitoringState].
   static MonitoringState _parseMonitoringState(dynamic state) {
-    if (state == 'INSIDE') {
+    if (!(state is String)) {
+      return null;
+    }
+
+    if (state.toLowerCase() == 'inside') {
       return MonitoringState.inside;
-    } else if (state == 'OUTSIDE') {
+    } else if (state.toLowerCase() == 'outside') {
       return MonitoringState.outside;
-    } else if (state == 'UNKNOWN') {
+    } else if (state.toLowerCase() == 'unknown') {
       return MonitoringState.unknown;
     }
 
@@ -57,5 +61,18 @@ class MonitoringResult {
     }
 
     return null;
+  }
+
+  dynamic get toJson {
+    final map = <String, dynamic>{
+      'event': monitoringEventType.toString().split('.').last,
+      'region': region.toJson,
+    };
+
+    if (monitoringState != null) {
+      map['state'] = monitoringState.toString().split('.').last;
+    }
+
+    return map;
   }
 }

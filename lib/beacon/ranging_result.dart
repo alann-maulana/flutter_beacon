@@ -13,12 +13,17 @@ class RangingResult {
   final List<Beacon> beacons;
 
   /// Constructor for deserialize dynamic json into [RangingResult].
-  RangingResult._from(dynamic json)
+  RangingResult.from(dynamic json)
       : region = Region.fromJson(json['region']),
         beacons = Beacon.beaconFromArray(json['beacons']);
 
+  dynamic get toJson => <String, dynamic>{
+        'region': region.toJson,
+        'beacons': Beacon.beaconArrayToJson(beacons),
+      };
+
   @override
   String toString() {
-    return 'RangingResult{"region": ${json.encode(region.toJson)}, "beacons": ${json.encode(Beacon.beaconArrayToJson(beacons))}}';
+    return json.encode(toJson);
   }
 }

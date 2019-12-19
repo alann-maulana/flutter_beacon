@@ -45,18 +45,21 @@ class Beacon {
     this.rssi,
     this.txPower,
     this.accuracy,
-  }) : this._proximity = null;
+    Proximity proximity,
+  }) : this._proximity = proximity;
 
   /// Create beacon object from json.
   Beacon.fromJson(dynamic json)
-      : proximityUUID = json['proximityUUID'],
-        macAddress = json['macAddress'],
-        major = json['major'],
-        minor = json['minor'],
-        rssi = _parseInt(json['rssi']),
-        txPower = _parseInt(json['txPower']),
-        accuracy = _parseDouble(json['accuracy']),
-        _proximity = _parseProximity(json['proximity']);
+      : this(
+          proximityUUID: json['proximityUUID'],
+          macAddress: json['macAddress'],
+          major: json['major'],
+          minor: json['minor'],
+          rssi: _parseInt(json['rssi']),
+          txPower: _parseInt(json['txPower']),
+          accuracy: _parseDouble(json['accuracy']),
+          proximity: _parseProximity(json['proximity']),
+        );
 
   /// Parsing dynamic data into double.
   static double _parseDouble(dynamic data) {
@@ -127,7 +130,7 @@ class Beacon {
       'minor': minor,
       'rssi': rssi ?? -1,
       'accuracy': accuracy,
-      'proximity': proximity.toString()
+      'proximity': proximity.toString().split('.').last
     };
 
     if (Platform.isAndroid) {

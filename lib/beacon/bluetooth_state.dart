@@ -5,45 +5,14 @@
 part of flutter_beacon;
 
 class BluetoothState {
-  final String value;
-  final bool isAndroid;
-  final bool isIOS;
-
-  static const stateOff = BluetoothState._(
-    'STATE_OFF',
-  );
-  static const stateTurningOff = BluetoothState._(
-    'STATE_TURNING_OFF',
-    isIOS: false,
-  );
-  static const stateOn = BluetoothState._(
-    'STATE_ON',
-  );
-  static const stateTurningOn = BluetoothState._(
-    'STATE_TURNING_ON',
-    isIOS: false,
-  );
-  static const stateUnknown = BluetoothState._(
-    'STATE_UNKNOWN',
-  );
-  static const stateResetting = BluetoothState._(
-    'STATE_RESETTING',
-    isAndroid: false,
-  );
-  static const stateUnsupported = BluetoothState._(
-    'STATE_UNSUPPORTED',
-  );
-  static const stateUnauthorized = BluetoothState._(
-    'STATE_UNAUTHORIZED',
-    isAndroid: false,
-  );
-
-  const BluetoothState._(
+  @visibleForTesting
+  const BluetoothState.init(
     this.value, {
     this.isAndroid = true,
     this.isIOS = true,
   });
 
+  @visibleForTesting
   factory BluetoothState.parse(dynamic state) {
     switch (state) {
       case "STATE_OFF":
@@ -66,4 +35,37 @@ class BluetoothState {
 
     return stateUnknown;
   }
+
+  final String value;
+  final bool isAndroid;
+  final bool isIOS;
+
+  static const stateOff = BluetoothState.init(
+    'STATE_OFF',
+  );
+  static const stateTurningOff = BluetoothState.init(
+    'STATE_TURNING_OFF',
+    isIOS: false,
+  );
+  static const stateOn = BluetoothState.init(
+    'STATE_ON',
+  );
+  static const stateTurningOn = BluetoothState.init(
+    'STATE_TURNING_ON',
+    isIOS: false,
+  );
+  static const stateUnknown = BluetoothState.init(
+    'STATE_UNKNOWN',
+  );
+  static const stateResetting = BluetoothState.init(
+    'STATE_RESETTING',
+    isAndroid: false,
+  );
+  static const stateUnsupported = BluetoothState.init(
+    'STATE_UNSUPPORTED',
+  );
+  static const stateUnauthorized = BluetoothState.init(
+    'STATE_UNAUTHORIZED',
+    isAndroid: false,
+  );
 }

@@ -91,25 +91,25 @@ class FlutterBeacon {
     return BluetoothState.parse(status);
   }
 
-  Future<void> get requestAuthorization async {
-    await _methodChannel.invokeMethod('requestAuthorization');
+  Future<bool> get requestAuthorization async {
+    return await _methodChannel.invokeMethod('requestAuthorization');
   }
 
-  Future<void> get openBluetoothSettings async {
-    await _methodChannel.invokeMethod('openBluetoothSettings');
+  Future<bool> get openBluetoothSettings async {
+    return await _methodChannel.invokeMethod('openBluetoothSettings');
   }
 
-  Future<void> get openLocationSettings async {
-    await _methodChannel.invokeMethod('openLocationSettings');
+  Future<bool> get openLocationSettings async {
+    return await _methodChannel.invokeMethod('openLocationSettings');
   }
 
-  Future<void> get openApplicationSettings async {
-    await _methodChannel.invokeMethod('openApplicationSettings');
+  Future<bool> get openApplicationSettings async {
+    return await _methodChannel.invokeMethod('openApplicationSettings');
   }
 
   /// Close scanning API.
-  Future<void> get close async {
-    await _methodChannel.invokeMethod('close');
+  Future<bool> get close async {
+    return await _methodChannel.invokeMethod('close');
   }
 
   /// Start ranging iBeacons with defined [List] of [Region]s.
@@ -120,7 +120,7 @@ class FlutterBeacon {
       final list = regions.map((region) => region.toJson).toList();
       _onRanging = _rangingChannel
           .receiveBroadcastStream(list)
-          .map((dynamic event) => RangingResult._from(event));
+          .map((dynamic event) => RangingResult.from(event));
     }
     return _onRanging;
   }
@@ -133,7 +133,7 @@ class FlutterBeacon {
       final list = regions.map((region) => region.toJson).toList();
       _onMonitoring = _monitoringChannel
           .receiveBroadcastStream(list)
-          .map((dynamic event) => MonitoringResult._from(event));
+          .map((dynamic event) => MonitoringResult.from(event));
     }
     return _onMonitoring;
   }

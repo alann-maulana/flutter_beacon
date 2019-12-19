@@ -9,12 +9,14 @@ class AuthorizationStatus {
   final bool isAndroid;
   final bool isIOS;
 
-  const AuthorizationStatus._(
+  @visibleForTesting
+  const AuthorizationStatus.init(
     this.value, {
     this.isAndroid,
     this.isIOS,
   });
 
+  @visibleForTesting
   factory AuthorizationStatus.parse(String value) {
     switch (value) {
       case 'ALLOWED':
@@ -34,37 +36,37 @@ class AuthorizationStatus {
     return null;
   }
 
-  static const AuthorizationStatus allowed = AuthorizationStatus._(
+  static const AuthorizationStatus allowed = AuthorizationStatus.init(
     'ALLOWED',
     isAndroid: true,
     isIOS: false,
   );
 
-  static const AuthorizationStatus always = AuthorizationStatus._(
+  static const AuthorizationStatus always = AuthorizationStatus.init(
     'ALWAYS',
     isAndroid: false,
     isIOS: true,
   );
 
-  static const AuthorizationStatus whenInUse = AuthorizationStatus._(
+  static const AuthorizationStatus whenInUse = AuthorizationStatus.init(
     'WHEN_IN_USE',
     isAndroid: false,
     isIOS: true,
   );
 
-  static const AuthorizationStatus denied = AuthorizationStatus._(
+  static const AuthorizationStatus denied = AuthorizationStatus.init(
     'DENIED',
     isAndroid: true,
     isIOS: true,
   );
 
-  static const AuthorizationStatus restricted = AuthorizationStatus._(
+  static const AuthorizationStatus restricted = AuthorizationStatus.init(
     'RESTRICTED',
     isAndroid: false,
     isIOS: true,
   );
 
-  static const AuthorizationStatus notDetermined = AuthorizationStatus._(
+  static const AuthorizationStatus notDetermined = AuthorizationStatus.init(
     'NOT_DETERMINED',
     isAndroid: false,
     isIOS: true,

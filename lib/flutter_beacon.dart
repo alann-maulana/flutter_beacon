@@ -78,8 +78,8 @@ class FlutterBeacon {
   }
 
   /// Check for the latest [AuthorizationStatus] from device.
-  /// 
-  /// For Android, this will return between [AuthorizationStatus.allowed] 
+  ///
+  /// For Android, this will return between [AuthorizationStatus.allowed]
   /// or [AuthorizationStatus.denied] only.
   Future<AuthorizationStatus> get authorizationStatus async {
     final status = await _methodChannel.invokeMethod('authorizationStatus');
@@ -98,7 +98,7 @@ class FlutterBeacon {
   }
 
   /// Request an authorization to the device.
-  /// 
+  ///
   /// For Android, this will request a permission of `Manifest.permission.ACCESS_COARSE_LOCATION`.
   /// For iOS, this will send a request `CLLocationManager#requestAlwaysAuthorization`.
   Future<bool> get requestAuthorization async {
@@ -106,21 +106,21 @@ class FlutterBeacon {
   }
 
   /// Request to open Bluetooth Settings from device.
-  /// 
+  ///
   /// For iOS, this will does nothing because of private method.
   Future<bool> get openBluetoothSettings async {
     return await _methodChannel.invokeMethod('openBluetoothSettings');
   }
 
   /// Request to open Locations Settings from device.
-  /// 
+  ///
   /// For iOS, this will does nothing because of private method.
   Future<bool> get openLocationSettings async {
     return await _methodChannel.invokeMethod('openLocationSettings');
   }
 
   /// Request to open Application Settings from device.
-  /// 
+  ///
   /// For Android, this will does nothing.
   Future<bool> get openApplicationSettings async {
     return await _methodChannel.invokeMethod('openApplicationSettings');

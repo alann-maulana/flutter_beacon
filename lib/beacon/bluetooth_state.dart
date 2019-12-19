@@ -39,10 +39,10 @@ class BluetoothState {
 
   /// The defined [String] value of the bluetooth state.
   final String value;
-  
+
   /// This will `true` only if this bluetooth state suit Android system.
   final bool isAndroid;
-  
+
   /// This will `true` only if this bluetooth state suit iOS system.
   final bool isIOS;
 
@@ -50,48 +50,48 @@ class BluetoothState {
   static const stateOff = BluetoothState.init(
     'STATE_OFF',
   );
-  
+
   /// Shows that bluetooth state is turning off.
-  /// 
+  ///
   /// Only for Android
   static const stateTurningOff = BluetoothState.init(
     'STATE_TURNING_OFF',
     isIOS: false,
   );
-  
+
   /// Shows that bluetooth state is on.
   static const stateOn = BluetoothState.init(
     'STATE_ON',
   );
-  
+
   /// Shows that bluetooth state is turning on.
-  /// 
+  ///
   /// Only in Android
   static const stateTurningOn = BluetoothState.init(
     'STATE_TURNING_ON',
     isIOS: false,
   );
-  
+
   /// Shows that bluetooth state is unknown. This is the default.
   static const stateUnknown = BluetoothState.init(
     'STATE_UNKNOWN',
   );
-  
+
   /// Shows that bluetooth state is resetting.
-  /// 
+  ///
   /// Only for iOS
   static const stateResetting = BluetoothState.init(
     'STATE_RESETTING',
     isAndroid: false,
   );
-  
+
   /// Shows that bluetooth state is unsupported.
   static const stateUnsupported = BluetoothState.init(
     'STATE_UNSUPPORTED',
   );
-  
+
   /// Shows that bluetooth state is unauthorized.
-  /// 
+  ///
   /// Only for iOS
   static const stateUnauthorized = BluetoothState.init(
     'STATE_UNAUTHORIZED',

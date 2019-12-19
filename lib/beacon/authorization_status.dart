@@ -8,10 +8,10 @@ part of flutter_beacon;
 class AuthorizationStatus {
   /// The defined [String] value of the authorization status.
   final String value;
-  
+
   /// This will `true` only if this authorization status suit Android system.
   final bool isAndroid;
-  
+
   /// This will `true` only if this authorization status suit iOS system.
   final bool isIOS;
 
@@ -43,7 +43,7 @@ class AuthorizationStatus {
   }
 
   /// Shows that user allowed the authorization.
-  /// 
+  ///
   /// Only for Android
   static const AuthorizationStatus allowed = AuthorizationStatus.init(
     'ALLOWED',
@@ -52,7 +52,7 @@ class AuthorizationStatus {
   );
 
   /// Shows that user always authorize app.
-  /// 
+  ///
   /// Only for iOS
   static const AuthorizationStatus always = AuthorizationStatus.init(
     'ALWAYS',
@@ -61,7 +61,7 @@ class AuthorizationStatus {
   );
 
   /// Shows that user authorize when in use app.
-  /// 
+  ///
   /// Only for iOS
   static const AuthorizationStatus whenInUse = AuthorizationStatus.init(
     'WHEN_IN_USE',
@@ -77,7 +77,7 @@ class AuthorizationStatus {
   );
 
   /// Shows that authorization has been restricted by system.
-  /// 
+  ///
   /// Only for iOS
   static const AuthorizationStatus restricted = AuthorizationStatus.init(
     'RESTRICTED',
@@ -86,7 +86,7 @@ class AuthorizationStatus {
   );
 
   /// Shows that authorization has not been determined by user.
-  /// 
+  ///
   /// Only for iOS
   static const AuthorizationStatus notDetermined = AuthorizationStatus.init(
     'NOT_DETERMINED',

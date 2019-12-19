@@ -24,17 +24,24 @@ script:
   - make
 after_success:
   - coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
+  - bash <(curl -s https://codecov.io/bash)
 
 deploy:
   # validating branch master for deploying
   - provider: script
     skip_cleanup: true
-    script: bash scripts/deploy.sh && rm -rf scripts/ && pub publish -n -v
+    script: >-
+      bash scripts/deploy.sh && 
+      rm -rf scripts/ && 
+      pub publish -n -v
     on:
       branch: master
   # deploy tagged to pub server
   - provider: script
     skip_cleanup: true
-    script: bash scripts/deploy.sh && rm -rf scripts/ && pub publish -f -v
+    script: >-
+      bash scripts/deploy.sh && 
+      rm -rf scripts/ && 
+      pub publish -f -v
     on:
       tags: true

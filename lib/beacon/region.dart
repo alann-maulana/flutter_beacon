@@ -4,7 +4,7 @@
 
 part of flutter_beacon;
 
-/// Class for managing ranging region scanning.
+/// Class for managing for ranging and monitoring region scanning.
 class Region {
   /// The unique identifier of region.
   final String identifier;
@@ -50,7 +50,7 @@ class Region {
           minor: _parseMajorMinor(json['minor']),
         );
 
-  /// Serialize [Region] object into json [Map].
+  /// Return the serializable of this object into [Map].
   dynamic get toJson {
     final map = <String, dynamic>{
       'identifier': identifier,

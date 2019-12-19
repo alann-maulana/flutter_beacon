@@ -50,7 +50,7 @@ class MonitoringResult {
     return null;
   }
 
-  // Parsing dynamic event into [MonitoringEventType]
+  /// Parsing dynamic event into [MonitoringEventType]
   static MonitoringEventType _parseMonitoringEventType(dynamic event) {
     if (event == 'didEnterRegion') {
       return MonitoringEventType.didEnterRegion;
@@ -63,6 +63,7 @@ class MonitoringResult {
     return null;
   }
 
+  /// Return the serializable of this object into [Map].
   dynamic get toJson {
     final map = <String, dynamic>{
       'event': monitoringEventType.toString().split('.').last,

@@ -4,9 +4,15 @@
 
 part of flutter_beacon;
 
+/// Enum class for showing status about authorization.
 class AuthorizationStatus {
+  /// The defined [String] value of the authorization status.
   final String value;
+  
+  /// This will `true` only if this authorization status suit Android system.
   final bool isAndroid;
+  
+  /// This will `true` only if this authorization status suit iOS system.
   final bool isIOS;
 
   @visibleForTesting
@@ -36,36 +42,52 @@ class AuthorizationStatus {
     return null;
   }
 
+  /// Shows that user allowed the authorization.
+  /// 
+  /// Only for Android
   static const AuthorizationStatus allowed = AuthorizationStatus.init(
     'ALLOWED',
     isAndroid: true,
     isIOS: false,
   );
 
+  /// Shows that user always authorize app.
+  /// 
+  /// Only for iOS
   static const AuthorizationStatus always = AuthorizationStatus.init(
     'ALWAYS',
     isAndroid: false,
     isIOS: true,
   );
 
+  /// Shows that user authorize when in use app.
+  /// 
+  /// Only for iOS
   static const AuthorizationStatus whenInUse = AuthorizationStatus.init(
     'WHEN_IN_USE',
     isAndroid: false,
     isIOS: true,
   );
 
+  /// Shows that user denied authorization request.
   static const AuthorizationStatus denied = AuthorizationStatus.init(
     'DENIED',
     isAndroid: true,
     isIOS: true,
   );
 
+  /// Shows that authorization has been restricted by system.
+  /// 
+  /// Only for iOS
   static const AuthorizationStatus restricted = AuthorizationStatus.init(
     'RESTRICTED',
     isAndroid: false,
     isIOS: true,
   );
 
+  /// Shows that authorization has not been determined by user.
+  /// 
+  /// Only for iOS
   static const AuthorizationStatus notDetermined = AuthorizationStatus.init(
     'NOT_DETERMINED',
     isAndroid: false,

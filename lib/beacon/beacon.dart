@@ -37,6 +37,7 @@ class Beacon {
   /// The proximity of beacon.
   final Proximity _proximity;
 
+  /// Create beacon object.
   const Beacon({
     this.proximityUUID,
     this.macAddress,

@@ -17,6 +17,7 @@ class RangingResult {
       : region = Region.fromJson(json['region']),
         beacons = Beacon.beaconFromArray(json['beacons']);
 
+  /// Return the serializable of this object into [Map].
   dynamic get toJson => <String, dynamic>{
         'region': region.toJson,
         'beacons': Beacon.beaconArrayToJson(beacons),

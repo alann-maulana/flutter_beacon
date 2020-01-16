@@ -357,7 +357,9 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
         if (object instanceof Map) {
           Map map = (Map) object;
           Region region = FlutterBeaconUtils.regionFromMap(map);
-          regionRanging.add(region);
+          if (region != null) {
+            regionRanging.add(region);
+          }
         }
       }
     } else {

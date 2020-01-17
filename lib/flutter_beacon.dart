@@ -62,7 +62,7 @@ class FlutterBeacon {
 
   /// Initialize scanning API.
   Future<bool> get initializeScanning async {
-    return await _methodChannel.invokeMethod('initialize') == 1;
+    return await _methodChannel.invokeMethod('initialize');
   }
 
   /// Initialize scanning API and check required permissions.
@@ -74,7 +74,7 @@ class FlutterBeacon {
   /// requestWhenInUse or requestAlways location services and check
   /// whether location services is enabled.
   Future<bool> get initializeAndCheckScanning async {
-    return await _methodChannel.invokeMethod('initializeAndCheck') == 1;
+    return await _methodChannel.invokeMethod('initializeAndCheck');
   }
 
   /// Check for the latest [AuthorizationStatus] from device.
@@ -88,7 +88,7 @@ class FlutterBeacon {
 
   /// Return `true` when location service is enabled, otherwise `false`.
   Future<bool> get checkLocationServicesIfEnabled async {
-    return await _methodChannel.invokeMethod('checkLocationServicesIfEnabled') == 1;
+    return await _methodChannel.invokeMethod('checkLocationServicesIfEnabled');
   }
 
   /// Check for the latest [BluetoothState] from device.
@@ -102,33 +102,33 @@ class FlutterBeacon {
   /// For Android, this will request a permission of `Manifest.permission.ACCESS_COARSE_LOCATION`.
   /// For iOS, this will send a request `CLLocationManager#requestAlwaysAuthorization`.
   Future<bool> get requestAuthorization async {
-    return await _methodChannel.invokeMethod('requestAuthorization') == 1;
+    return await _methodChannel.invokeMethod('requestAuthorization');
   }
 
   /// Request to open Bluetooth Settings from device.
   ///
   /// For iOS, this will does nothing because of private method.
   Future<bool> get openBluetoothSettings async {
-    return await _methodChannel.invokeMethod('openBluetoothSettings') == 1;
+    return await _methodChannel.invokeMethod('openBluetoothSettings');
   }
 
   /// Request to open Locations Settings from device.
   ///
   /// For iOS, this will does nothing because of private method.
   Future<bool> get openLocationSettings async {
-    return await _methodChannel.invokeMethod('openLocationSettings') == 1;
+    return await _methodChannel.invokeMethod('openLocationSettings');
   }
 
   /// Request to open Application Settings from device.
   ///
   /// For Android, this will does nothing.
   Future<bool> get openApplicationSettings async {
-    return await _methodChannel.invokeMethod('openApplicationSettings') == 1;
+    return await _methodChannel.invokeMethod('openApplicationSettings');
   }
 
   /// Close scanning API.
   Future<bool> get close async {
-    return await _methodChannel.invokeMethod('close') == 1;
+    return await _methodChannel.invokeMethod('close');
   }
 
   /// Start ranging iBeacons with defined [List] of [Region]s.

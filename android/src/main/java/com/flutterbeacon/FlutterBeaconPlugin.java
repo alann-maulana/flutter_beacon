@@ -249,6 +249,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
   private void openLocationSettings() {
     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     registrar.context().startActivity(intent);
   }
 

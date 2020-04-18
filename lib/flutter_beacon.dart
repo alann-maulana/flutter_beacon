@@ -79,8 +79,7 @@ class FlutterBeacon {
 
   /// Check for the latest [AuthorizationStatus] from device.
   ///
-  /// For Android, this will return between [AuthorizationStatus.allowed]
-  /// or [AuthorizationStatus.denied] only.
+  /// For Android, this will return [AuthorizationStatus.allowed], [AuthorizationStatus.denied] or [AuthorizationStatus.notDetermined].
   Future<AuthorizationStatus> get authorizationStatus async {
     final status = await _methodChannel.invokeMethod('authorizationStatus');
     return AuthorizationStatus.parse(status);
@@ -170,7 +169,6 @@ class FlutterBeacon {
   }
 
   /// Start checking for location service authorization status changed.
-  /// This stream only enabled on iOS only.
   ///
   /// This will fires [AuthorizationStatus] whenever authorization status changed.
   Stream<AuthorizationStatus> authorizationStatusChanged() {

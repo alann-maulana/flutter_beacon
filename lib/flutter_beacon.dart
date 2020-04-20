@@ -77,6 +77,17 @@ class FlutterBeacon {
     return await _methodChannel.invokeMethod('initializeAndCheck');
   }
 
+  /// Set the default AuthorizationStatus to use in requesting location authorization.
+  /// For iOS, this can be either [AuthorizationStatus.whenInUse] or [AuthorizationStatus.always].
+  /// For Android, this is not used.
+  ///
+  /// This method should be called very early to have an effect,
+  /// before any of the other initializeScanning or authorizationStatus getters.
+  ///
+  Future<bool> setLocationAuthorizationTypeDefault(AuthorizationStatus authorizationStatus) async {
+    return await _methodChannel.invokeMethod('setLocationAuthorizationTypeDefault', authorizationStatus.value);
+  }
+
   /// Check for the latest [AuthorizationStatus] from device.
   ///
   /// For Android, this will return between [AuthorizationStatus.allowed]

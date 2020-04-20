@@ -126,6 +126,15 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       return;
     }
 
+    if (call.method.equals("setLocationAuthorizationTypeDefault")) {
+      // Android does not have the concept of "requestWhenInUse" and "requestAlways" like iOS does,
+      // so this method does nothing.
+      // (Well, in Android API 29 and higher, there is an "ACCESS_BACKGROUND_LOCATION" option,
+      //  which could perhaps be appropriate to add here as an improvement.)
+      result.success(true);
+      return;
+    }
+
     if (call.method.equals("authorizationStatus")) {
       result.success(checkLocationServicesPermission() ? "ALLOWED" : "DENIED");
       return;

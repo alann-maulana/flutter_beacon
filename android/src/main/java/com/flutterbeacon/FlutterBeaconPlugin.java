@@ -259,7 +259,8 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
   private void requestAuthorization() {
     ActivityCompat.requestPermissions(registrar.activity(), new String[]{
-        Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
     }, REQUEST_CODE_LOCATION);
   }
 

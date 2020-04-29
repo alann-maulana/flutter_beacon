@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-bash /scripts/credentials.sh
+bash scripts/credentials.sh
 make deps
 make docs

@@ -1,3 +1,12 @@
+## [0.3.0]
+
+* Update Android-Beacon-Library to version [2.16.3](https://github.com/AltBeacon/android-beacon-library/tree/2.16.3)
+* Add `BluetoothState` event channel
+* Add `AuthorizationStatus` event channel [iOS only]
+* Add manual check for `AuthorizationStatus`, `BluetoothState`, Location Service.
+* Add opener settings for Bluetooth [Android], Location [Android] and Application [iOS].
+* A lot of improvements
+
 ## [0.2.4]
 
 * Fix bugs

@@ -60,7 +60,7 @@
     if ([@"initialize" isEqualToString:call.method]) {
         [self initializeLocationManager];
         [self initializeCentralManager];
-        result(@(true));
+        result(@(YES));
         return;
     }
     

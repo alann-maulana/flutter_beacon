@@ -55,7 +55,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   private final Registrar registrar;
   private BeaconManager beaconManager;
   private Result flutterResult, flutterResultBluetooth;
-  private EventChannel.EventSink eventSinkRanging, eventSinkMonitoring;
+  private EventChannel.EventSink eventSinkRanging, eventSinkMonitoring, eventSinkLocationAuthorizationStatus;
   private List<Region> regionRanging;
   private List<Region> regionMonitoring;
 
@@ -90,7 +90,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     eventChannelBluetoothState.setStreamHandler(new FlutterBluetoothStateReceiver(context));
 
     eventChannelAuthorizationStatus = new EventChannel(messenger, "flutter_authorization_status_changed");
-    eventChannelAuthorizationStatus.setStreamHandler(null);
+    eventChannelAuthorizationStatus.setStreamHandler(locationAuthorizationStatusStreamHandler);
   }
 
   private void teardownChannels() {
@@ -127,7 +127,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
     }
 
     if (call.method.equals("authorizationStatus")) {
-      result.success(checkLocationServicesPermission() ? "ALLOWED" : "DENIED");
+      result.success(checkLocationServicesPermission() ? "ALLOWED" : "NOT_DETERMINED");
       return;
     }
 
@@ -154,6 +154,23 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
         this.flutterResult = result;
         requestAuthorization();
         return;
+      }
+
+      // Here, location services permission is granted.
+      //
+      // It's possible location permission was granted without going through
+      // our onRequestPermissionsResult() - for example if a different flutter plugin
+      // also requested location permissions, we could end up here with
+      // checkLocationServicesPermission() returning true before we ever called requestAuthorization().
+      //
+      // In that case, we'll never get a notification posted to eventSinkLocationAuthorizationStatus
+      //
+      // So we could could have flutter code calling requestAuthorization here and expecting to see
+      // a change in eventSinkLocationAuthorizationStatus but never receiving it.
+      //
+      // Ensure an ALLOWED status (possibly duplicate) is posted back.
+      if (eventSinkLocationAuthorizationStatus != null) {
+        eventSinkLocationAuthorizationStatus.success("ALLOWED");
       }
 
       result.success(true);
@@ -246,6 +263,18 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
       result.success(true);
     }
   }
+
+  private final EventChannel.StreamHandler locationAuthorizationStatusStreamHandler = new EventChannel.StreamHandler() {
+    @Override
+    public void onListen(Object arguments, EventChannel.EventSink events) {
+      eventSinkLocationAuthorizationStatus = events;
+    }
+
+    @Override
+    public void onCancel(Object arguments) {
+      eventSinkLocationAuthorizationStatus = null;
+    }
+  };
 
   private void openLocationSettings() {
     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -546,6 +575,22 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
           //allowed
           locationServiceAllowed = true;
         }
+        if (eventSinkLocationAuthorizationStatus != null) {
+          // shouldShowRequestPermissionRationale = false, so if access wasn't granted, the user clicked DENY and checked DON'T SHOW AGAIN
+          eventSinkLocationAuthorizationStatus.success(locationServiceAllowed ? "ALLOWED" : "DENIED");
+        }
+      }
+      else {
+        // shouldShowRequestPermissionRationale = true, so the user has clicked DENY but not DON'T SHOW AGAIN, we can possibly prompt again
+        if (eventSinkLocationAuthorizationStatus != null) {
+          eventSinkLocationAuthorizationStatus.success("NOT_DETERMINED");
+        }
+      }
+    }
+    else {
+      // Permission request was cancelled (another requestPermission active, other interruptions), we can possibly prompt again
+      if (eventSinkLocationAuthorizationStatus != null) {
+        eventSinkLocationAuthorizationStatus.success("NOT_DETERMINED");
       }
     }
 

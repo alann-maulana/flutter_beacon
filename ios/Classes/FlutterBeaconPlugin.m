@@ -9,6 +9,8 @@
 
 @interface FlutterBeaconPlugin() <CLLocationManagerDelegate, CBCentralManagerDelegate>
 
+@property (assign, nonatomic) CLAuthorizationStatus defaultLocationAuthorizationType;
+
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CBCentralManager *bluetoothManager;
 @property (strong, nonatomic) NSMutableArray *regionRanging;
@@ -56,6 +58,16 @@
     [streamChannelAuthorization setStreamHandler:instance.authorizationHandler];
 }
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        // Earlier versions of flutter_beacon only supported "always" permission,
+        // so set this as the default to stay backwards compatible.
+        self.defaultLocationAuthorizationType = kCLAuthorizationStatusAuthorizedAlways;
+    }
+    return self;
+}
+
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"initialize" isEqualToString:call.method]) {
         [self initializeLocationManager];
@@ -69,6 +81,24 @@
         return;
     }
     
+    if ([@"setLocationAuthorizationTypeDefault" isEqualToString:call.method]) {
+        if (call.arguments != nil && [call.arguments isKindOfClass:[NSString class]]) {
+            NSString *argumentAsString = (NSString*)call.arguments;
+            if ([@"ALWAYS" isEqualToString:argumentAsString]) {
+                self.defaultLocationAuthorizationType = kCLAuthorizationStatusAuthorizedAlways;
+                result(@(YES));
+                return;
+            }
+            if ([@"WHEN_IN_USE" isEqualToString:argumentAsString]) {
+                self.defaultLocationAuthorizationType = kCLAuthorizationStatusAuthorizedWhenInUse;
+                result(@(YES));
+                return;
+            }
+        }
+        result(@(NO));
+        return;
+    }
+
     if ([@"authorizationStatus" isEqualToString:call.method]) {
         [self initializeLocationManager];
         
@@ -133,7 +163,7 @@
     if ([@"requestAuthorization" isEqualToString:call.method]) {
         if (self.locationManager) {
             self.flutterResult = result;
-            [self.locationManager requestAlwaysAuthorization];
+            [self requestDefaultLocationManagerAuthorization];
         } else {
             result(@(YES));
         }
@@ -329,8 +359,7 @@
             }
             if ([CLLocationManager locationServicesEnabled]) {
                 if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
-                    //[self.locationManager requestWhenInUseAuthorization];
-                    [self.locationManager requestAlwaysAuthorization];
+                    [self requestDefaultLocationManagerAuthorization];
                     return;
                 } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
                     message = @"CLAuthorizationStatusDenied";
@@ -356,6 +385,18 @@
 ///------------------------------------------------------------
 #pragma mark - Location Manager
 ///------------------------------------------------------------
+
+- (void)requestDefaultLocationManagerAuthorization {
+    switch (self.defaultLocationAuthorizationType) {
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+            [self.locationManager requestWhenInUseAuthorization];
+            break;
+        case kCLAuthorizationStatusAuthorizedAlways:
+        default:
+            [self.locationManager requestAlwaysAuthorization];
+            break;
+    }
+}
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     NSString *message = nil;

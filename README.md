@@ -58,6 +58,12 @@ Permission must be declared in `ios/Runner/Info.plist`:
 </dict>
 ```
 
+## iOS Troubleshooting
+
+* Example code works properly only on **physical device** (bluetooth on simulator is disabled)
+* How to deploy flutter app on iOS device [Instruction](https://flutter.dev/docs/get-started/install/macos)
+* If example code don't works on device (beacons not appear), please make sure that you have enabled <br/> Location and Bluetooth (Settings -> Flutter Beacon) 
+
 ## How-to
 
 Ranging APIs are designed as reactive streams.  

@@ -49,12 +49,6 @@ class FlutterBeacon {
       EventChannel('flutter_authorization_status_changed');
 
   /// This information does not change from call to call. Cache it.
-  Stream<RangingResult> _onRanging;
-
-  /// This information does not change from call to call. Cache it.
-  Stream<MonitoringResult> _onMonitoring;
-
-  /// This information does not change from call to call. Cache it.
   Stream<BluetoothState> _onBluetoothState;
 
   /// This information does not change from call to call. Cache it.
@@ -199,26 +193,22 @@ class FlutterBeacon {
   ///
   /// This will fires [RangingResult] whenever the iBeacons in range.
   Stream<RangingResult> ranging(List<Region> regions) {
-    if (_onRanging == null) {
-      final list = regions.map((region) => region.toJson).toList();
-      _onRanging = _rangingChannel
-          .receiveBroadcastStream(list)
-          .map((dynamic event) => RangingResult.from(event));
-    }
-    return _onRanging;
+    final list = regions.map((region) => region.toJson).toList();
+    final Stream<RangingResult> onRanging = _rangingChannel
+        .receiveBroadcastStream(list)
+        .map((dynamic event) => RangingResult.from(event));
+    return onRanging;
   }
 
   /// Start monitoring iBeacons with defined [List] of [Region]s.
   ///
   /// This will fires [MonitoringResult] whenever the iBeacons in range.
   Stream<MonitoringResult> monitoring(List<Region> regions) {
-    if (_onMonitoring == null) {
-      final list = regions.map((region) => region.toJson).toList();
-      _onMonitoring = _monitoringChannel
-          .receiveBroadcastStream(list)
-          .map((dynamic event) => MonitoringResult.from(event));
-    }
-    return _onMonitoring;
+    final list = regions.map((region) => region.toJson).toList();
+    final Stream<MonitoringResult> onMonitoring = _monitoringChannel
+        .receiveBroadcastStream(list)
+        .map((dynamic event) => MonitoringResult.from(event));
+    return onMonitoring;
   }
 
   /// Start checking for bluetooth state changed.

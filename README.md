@@ -6,6 +6,8 @@
 
 An hybrid iBeacon scanner SDK for Flutter plugin. Supports Android API 18+ and iOS 8+.
 
+**Note!** Version `1.0` or higher requires use of Android V2 embedding you can read more about it here: https://flutter.dev/go/android-project-migration
+
 Features:
 
 * Automatic permission management

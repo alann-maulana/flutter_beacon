@@ -127,7 +127,7 @@ class FlutterBeacon {
 
   /// Request an authorization to the device.
   ///
-  /// For Android, this will request a permission of `Manifest.permission.ACCESS_COARSE_LOCATION`.
+  /// For Android, this will request a permission of `Manifest.permission.ACCESS_FINE_LOCATION`.
   /// For iOS, this will send a request `CLLocationManager#requestAlwaysAuthorization`.
   Future<bool> get requestAuthorization async {
     final result = await _methodChannel.invokeMethod('requestAuthorization');

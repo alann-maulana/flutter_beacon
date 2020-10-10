@@ -45,6 +45,7 @@ class FlutterBeaconPlugin : FlutterPlugin, ActivityAware {
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding
         communicator.init(binaryMessenger!!, binding)
+        binding.addRequestPermissionsResultListener(PermissionController)
         beaconController = BeaconController(this, binding.activity)
     }
 

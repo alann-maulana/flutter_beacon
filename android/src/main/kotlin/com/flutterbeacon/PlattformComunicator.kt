@@ -110,7 +110,7 @@ class PlattformComunicator(private val plugin: FlutterBeaconPlugin) : MethodChan
             }
             "requestAuthorization" -> {
                 if (checkLocationPermission(activityBinding)) return result.success(true)
-                activityBinding.addRequestPermissionsResultListener(PermissionResponder(result, plugin))
+                PermissionController.register(PermissionResponder(result, plugin))
                 requestPermission(activityBinding.activity)
             }
             "openBluetoothSettings" -> openBluetoothSettings(activityBinding, result)

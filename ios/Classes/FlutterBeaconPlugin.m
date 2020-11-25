@@ -7,14 +7,17 @@
 #import "FBMonitoringStreamHandler.h"
 #import "FBAuthorizationStatusHandler.h"
 
-@interface FlutterBeaconPlugin() <CLLocationManagerDelegate, CBCentralManagerDelegate>
+@interface FlutterBeaconPlugin() <CLLocationManagerDelegate, CBCentralManagerDelegate, CBPeripheralManagerDelegate>
 
 @property (assign, nonatomic) CLAuthorizationStatus defaultLocationAuthorizationType;
+@property (assign) BOOL shouldStartAdvertise;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CBCentralManager *bluetoothManager;
+@property (strong, nonatomic) CBPeripheralManager *peripheralManager;
 @property (strong, nonatomic) NSMutableArray *regionRanging;
 @property (strong, nonatomic) NSMutableArray *regionMonitoring;
+@property (strong, nonatomic) NSDictionary *beaconPeripheralData;
 
 @property (strong, nonatomic) FBRangingStreamHandler* rangingHandler;
 @property (strong, nonatomic) FBMonitoringStreamHandler* monitoringHandler;
@@ -23,6 +26,7 @@
 
 @property FlutterResult flutterResult;
 @property FlutterResult flutterBluetoothResult;
+@property FlutterResult flutterBroadcastResult;
 
 @end
 
@@ -171,11 +175,47 @@
     }
     
     if ([@"openBluetoothSettings" isEqualToString:call.method]) {
-        // not implemented
+        // do nothing
+        
+        // Beware, this is considered as a private API and Apple will rejecte your application
+        // Uncomment these codes below if your want to publish this app privately
+        /*
+        NSString *settingsUrl= @"App-Prefs:root=Bluetooth";
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+            if (@available(iOS 10.0, *)) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl] options:@{} completionHandler:^(BOOL success) {
+                    NSLog(@"Bluetooth settings opened");
+                }];
+            } else {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl]];
+            }
+        }
+         */
+        
+        result(@(YES));
+        return;
     }
     
     if ([@"openLocationSettings" isEqualToString:call.method]) {
-        // not implemented
+        // // do nothing
+        
+        // Beware, this is considered as a private API and Apple will reject your application
+        // Uncomment these codes below if your want to publish this app privately
+        /*
+        NSString *settingsUrl= @"App-Prefs:root=Privacy&path=LOCATION";
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+            if (@available(iOS 10.0, *)) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl] options:@{} completionHandler:^(BOOL success) {
+                    NSLog(@"Location settings opened");
+                }];
+            } else {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl]];
+            }
+        }
+         */
+        
+        result(@(YES));
+        return;
     }
     
     if ([@"openApplicationSettings" isEqualToString:call.method]) {
@@ -187,6 +227,34 @@
     if ([@"close" isEqualToString:call.method]) {
         [self stopRangingBeacon];
         [self stopMonitoringBeacon];
+        result(@(YES));
+        return;
+    }
+    
+    if ([@"startBroadcast" isEqualToString:call.method]) {
+        self.flutterBroadcastResult = result;
+        [self startBroadcast:call.arguments];
+        return;
+    }
+    
+    if ([@"stopBroadcast" isEqualToString:call.method]) {
+        if (self.peripheralManager) {
+            [self.peripheralManager stopAdvertising];
+        }
+        result(nil);
+        return;
+    }
+    
+    if ([@"isBroadcasting" isEqualToString:call.method]) {
+        if (self.peripheralManager) {
+            result(@([self.peripheralManager isAdvertising]));
+        } else {
+            result(@(NO));
+        }
+        return;
+    }
+    
+    if ([@"isBroadcastSupported" isEqualToString:call.method]) {
         result(@(YES));
         return;
     }
@@ -207,6 +275,16 @@
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
     }
+}
+
+- (void) startBroadcast:(id)arguments {
+    NSDictionary *dict = arguments;
+    NSNumber *measuredPower = dict[@"txPower"];
+    CLBeaconRegion *region = [FBUtils regionFromDictionary:dict];
+    
+    self.shouldStartAdvertise = YES;
+    self.beaconPeripheralData = [region peripheralDataWithMeasuredPower:measuredPower];
+    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
 }
 
 ///------------------------------------------------------------
@@ -530,6 +608,36 @@
                                               });
         }
     }
+}
+
+///------------------------------------------------------------
+#pragma mark - Peripheral Manager
+///------------------------------------------------------------
+
+- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
+    switch (peripheral.state) {
+        case CBPeripheralManagerStatePoweredOn:
+            if (self.shouldStartAdvertise) {
+                [peripheral startAdvertising:self.beaconPeripheralData];
+                self.shouldStartAdvertise = NO;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(nullable NSError *)error {
+    if (!self.flutterBroadcastResult) {
+        return;
+    }
+    
+    if (error) {
+        self.flutterBroadcastResult([FlutterError errorWithCode:@"Broadcast" message:error.localizedDescription details:error]);
+    } else {
+        self.flutterBroadcastResult(@(peripheral.isAdvertising));
+    }
+    self.flutterBroadcastResult = nil;
 }
 
 @end

@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -23,6 +25,7 @@ import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.BeaconTransmitter;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
@@ -54,6 +57,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
 
   private final Registrar registrar;
   private BeaconManager beaconManager;
+  private BeaconTransmitter beaconTransmitter;
   private Result flutterResult, flutterResultBluetooth;
   private EventChannel.EventSink eventSinkRanging, eventSinkMonitoring, eventSinkLocationAuthorizationStatus;
   private List<Region> regionRanging;
@@ -108,7 +112,7 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
   }
 
   @Override
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+  public void onMethodCall(@NonNull MethodCall call, @NonNull final Result result) {
     if (call.method.equals("initialize")) {
       initialize();
       if (beaconManager != null && !beaconManager.isBound(beaconConsumer)) {
@@ -219,6 +223,71 @@ public class FlutterBeaconPlugin implements MethodCallHandler,
         }
       }
       result.success(true);
+      return;
+    }
+
+    if (call.method.equals("startBroadcast")) {
+      if (!(call.arguments instanceof Map)) {
+        result.error("Broadcast", "Invalid parameter", null);
+        return;
+      }
+
+      Map map = (Map) call.arguments;
+      Beacon beacon = FlutterBeaconUtils.beaconFromMap(map);
+      beaconTransmitter = new BeaconTransmitter(registrar.context(), iBeaconLayout);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        Object advertisingMode = map.get("advertisingMode");
+        if (advertisingMode instanceof Integer) {
+          beaconTransmitter.setAdvertiseMode((Integer) advertisingMode);
+        }
+        Object advertisingTxPowerLevel = map.get("advertisingTxPowerLevel");
+        if (advertisingTxPowerLevel instanceof Integer) {
+          beaconTransmitter.setAdvertiseTxPowerLevel((Integer) advertisingTxPowerLevel);
+        }
+        beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
+          @Override
+          public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            result.success(true);
+          }
+
+          @Override
+          public void onStartFailure(int errorCode) {
+            String error = "FEATURE_UNSUPPORTED";
+            if (errorCode == ADVERTISE_FAILED_DATA_TOO_LARGE) {
+              error = "DATA_TOO_LARGE";
+            } else if (errorCode == ADVERTISE_FAILED_TOO_MANY_ADVERTISERS) {
+              error = "TOO_MANY_ADVERTISERS";
+            } else if (errorCode == ADVERTISE_FAILED_ALREADY_STARTED) {
+              error = "ALREADY_STARTED";
+            } else if (errorCode == ADVERTISE_FAILED_INTERNAL_ERROR) {
+              error = "INTERNAL_ERROR";
+            }
+            result.error("Broadcast", error, null);
+          }
+        });
+      }
+      return;
+    }
+
+    if (call.method.equals("stopBroadcast")) {
+      if (beaconTransmitter != null) {
+        beaconTransmitter.stopAdvertising();
+        result.success(true);
+      }
+      return;
+    }
+
+    if (call.method.equals("isBroadcasting")) {
+      if (beaconTransmitter != null) {
+        result.success(beaconTransmitter.isStarted());
+      } else {
+        result.success(false);
+      }
+      return;
+    }
+
+    if (call.method.equals("isBroadcastSupported")) {
+      result.success(BeaconTransmitter.checkTransmissionSupported(registrar.context()) == 0);
       return;
     }
 

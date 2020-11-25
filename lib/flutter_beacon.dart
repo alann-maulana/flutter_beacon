@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_beacon/beacon/beacon_broadcast.dart';
 
 part 'beacon/beacon.dart';
 part 'beacon/bluetooth_state.dart';
@@ -94,8 +95,10 @@ class FlutterBeacon {
   /// This method should be called very early to have an effect,
   /// before any of the other initializeScanning or authorizationStatus getters.
   ///
-  Future<bool> setLocationAuthorizationTypeDefault(AuthorizationStatus authorizationStatus) async {
-    return await _methodChannel.invokeMethod('setLocationAuthorizationTypeDefault', authorizationStatus.value);
+  Future<bool> setLocationAuthorizationTypeDefault(
+      AuthorizationStatus authorizationStatus) async {
+    return await _methodChannel.invokeMethod(
+        'setLocationAuthorizationTypeDefault', authorizationStatus.value);
   }
 
   /// Check for the latest [AuthorizationStatus] from device.
@@ -108,7 +111,8 @@ class FlutterBeacon {
 
   /// Return `true` when location service is enabled, otherwise `false`.
   Future<bool> get checkLocationServicesIfEnabled async {
-    final result = await _methodChannel.invokeMethod('checkLocationServicesIfEnabled');
+    final result =
+        await _methodChannel.invokeMethod('checkLocationServicesIfEnabled');
 
     if (result is bool) {
       return result;
@@ -243,5 +247,23 @@ class FlutterBeacon {
           .map((dynamic event) => AuthorizationStatus.parse(event));
     }
     return _onAuthorizationStatus;
+  }
+
+  Future<void> startBroadcast(BeaconBroadcast params) async {
+    await _methodChannel.invokeMethod('startBroadcast', params.toJson);
+  }
+
+  Future<void> stopBroadcast() async {
+    await _methodChannel.invokeMethod('stopBroadcast');
+  }
+
+  Future<bool> isBroadcasting() async {
+    final flag = await _methodChannel.invokeMethod('isBroadcasting');
+    return flag == true || flag == 1;
+  }
+
+  Future<bool> isBroadcastSupported() async {
+    final flag = await _methodChannel.invokeMethod('isBroadcastSupported');
+    return flag == true || flag == 1;
   }
 }

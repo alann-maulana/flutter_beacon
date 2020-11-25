@@ -8,6 +8,8 @@ import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -92,5 +94,34 @@ class FlutterBeaconUtils {
       Log.e("REGION", "Error : " + e);
       return null;
     }
+  }
+
+  static Beacon beaconFromMap(Map map) {
+    Beacon.Builder builder = new Beacon.Builder();
+
+    Object proximityUUID = map.get("proximityUUID");
+    if (proximityUUID instanceof String) {
+      builder.setId1((String) proximityUUID);
+    }
+    Object major = map.get("major");
+    if (major instanceof Integer) {
+      builder.setId2(major.toString());
+    }
+    Object minor = map.get("minor");
+    if (minor instanceof Integer) {
+      builder.setId3(minor.toString());
+    }
+
+    Object txPower = map.get("txPower");
+    if (txPower instanceof Integer) {
+      builder.setTxPower((Integer) txPower);
+    } else {
+      builder.setTxPower(-59);
+    }
+
+    builder.setDataFields(Collections.singletonList(0L));
+    builder.setManufacturer(0x004c);
+
+    return builder.build();
   }
 }

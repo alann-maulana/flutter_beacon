@@ -1,6 +1,8 @@
-import 'dart:io';
+//  Copyright (c) 2018 Eyro Labs.
+//  Licensed under Apache License v2.0 that can be
+//  found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
+part of flutter_beacon;
 
 /// Class for managing Beacon Broadcast object.
 class BeaconBroadcast {

@@ -97,4 +97,9 @@ class BluetoothState {
     'STATE_UNAUTHORIZED',
     isAndroid: false,
   );
+
+  @override
+  String toString() {
+    return value;
+  }
 }

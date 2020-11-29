@@ -279,7 +279,10 @@
 
 - (void) startBroadcast:(id)arguments {
     NSDictionary *dict = arguments;
-    NSNumber *measuredPower = dict[@"txPower"];
+    NSNumber *measuredPower = nil;
+    if (dict[@"txPower"] != [NSNull null]) {
+        measuredPower = dict[@"txPower"];
+    }
     CLBeaconRegion *region = [FBUtils regionFromDictionary:dict];
     
     self.shouldStartAdvertise = YES;

@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
-import 'app_scanning.dart' as s;
-import 'app_broadcasting.dart' as b;
+import 'controller/requirement_state_controller.dart';
+import 'view/home_page.dart';
 
 void main() {
   runApp(MainApp());
@@ -14,10 +12,12 @@ void main() {
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Get.put(RequirementStateController());
+
     final themeData = Theme.of(context);
     final primary = Colors.blue;
 
-    return MaterialApp(
+    return GetMaterialApp(
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: primary,
@@ -40,8 +40,9 @@ class MainApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        primarySwatch: primary,
       ),
-      home: Platform.isIOS ? b.MyApp() : s.MyApp(),
+      home: HomePage(),
     );
   }
 }

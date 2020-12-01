@@ -11,7 +11,7 @@ import android.content.IntentFilter;
 import io.flutter.plugin.common.EventChannel;
 
 class FlutterBluetoothStateReceiver extends BroadcastReceiver implements EventChannel.StreamHandler {
-  private Context context;
+  private final Context context;
   private EventChannel.EventSink eventSink;
 
   public FlutterBluetoothStateReceiver(Context context) {

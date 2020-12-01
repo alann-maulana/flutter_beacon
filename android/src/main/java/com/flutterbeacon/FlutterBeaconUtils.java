@@ -8,7 +8,6 @@ import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +63,7 @@ class FlutterBeaconUtils {
     return map;
   }
 
+  @SuppressWarnings("rawtypes")
   static Region regionFromMap(Map map) {
     try {
       String identifier = "";
@@ -96,6 +96,7 @@ class FlutterBeaconUtils {
     }
   }
 
+  @SuppressWarnings("rawtypes")
   static Beacon beaconFromMap(Map map) {
     Beacon.Builder builder = new Beacon.Builder();
 

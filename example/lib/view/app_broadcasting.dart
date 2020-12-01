@@ -33,12 +33,12 @@ class _TabBroadcastingState extends State<TabBroadcasting> {
 
     controller.startBroadcastStream.listen((flag) {
       if (flag == true) {
-        initScanBeacon();
+        initBroadcastBeacon();
       }
     });
   }
 
-  initScanBeacon() async {
+  initBroadcastBeacon() async {
     await flutterBeacon.initializeScanning;
   }
 
@@ -53,25 +53,29 @@ class _TabBroadcastingState extends State<TabBroadcasting> {
     return Scaffold(
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(clearFocus),
-        child: broadcastReady != true
-            ? Center(child: Text('Please wait...'))
-            : Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      uuidField,
-                      majorField,
-                      minorField,
-                      SizedBox(height: 16),
-                      buttonBroadcast,
-                    ],
+        child: Obx(
+          () => broadcastReady != true
+              ? Center(child: Text('Please wait...'))
+              : Form(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        uuidField,
+                        majorField,
+                        minorField,
+                        SizedBox(height: 16),
+                        buttonBroadcast,
+                      ],
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

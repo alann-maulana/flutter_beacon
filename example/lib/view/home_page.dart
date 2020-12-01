@@ -38,7 +38,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       controller.updateBluetoothState(state);
 
       if (state == BluetoothState.stateOn) {
-        checkAllRequirements();
+        await checkAllRequirements();
+      } else if (state == BluetoothState.stateOff) {
+        controller.pauseScanning();
       }
     });
   }
@@ -57,7 +59,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (controller.bluetoothEnabled &&
         controller.locationServiceEnabled &&
         controller.locationServiceEnabled) {
-      controller.startScanning();
+      if (currentIndex == 0) {
+        controller.startScanning();
+      } else {
+        controller.startBroadcasting();
+      }
     }
   }
 

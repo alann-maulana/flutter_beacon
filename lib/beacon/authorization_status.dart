@@ -92,4 +92,9 @@ class AuthorizationStatus {
     isAndroid: true,
     isIOS: true,
   );
+
+  @override
+  String toString() {
+    return value;
+  }
 }

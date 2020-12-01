@@ -34,36 +34,39 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _streamBluetooth = flutterBeacon
         .bluetoothStateChanged()
         .listen((BluetoothState state) async {
-      print('BluetoothState = $state');
       controller.updateBluetoothState(state);
-
-      if (state == BluetoothState.stateOn) {
-        await checkAllRequirements();
-      } else if (state == BluetoothState.stateOff) {
-        controller.pauseScanning();
-      }
+      await checkAllRequirements();
     });
   }
 
   checkAllRequirements() async {
     final bluetoothState = await flutterBeacon.bluetoothState;
     controller.updateBluetoothState(bluetoothState);
+    print('BLUETOOTH $bluetoothState');
 
     final authorizationStatus = await flutterBeacon.authorizationStatus;
     controller.updateAuthorizationStatus(authorizationStatus);
+    print('AUTHORIZATION $authorizationStatus');
 
     final locationServiceEnabled =
         await flutterBeacon.checkLocationServicesIfEnabled;
     controller.updateLocationService(locationServiceEnabled);
+    print('LOCATION SERVICE $locationServiceEnabled');
 
     if (controller.bluetoothEnabled &&
-        controller.locationServiceEnabled &&
+        controller.authorizationStatusOk &&
         controller.locationServiceEnabled) {
+      print('STATE READY');
       if (currentIndex == 0) {
+        print('SCANNING');
         controller.startScanning();
       } else {
+        print('BROADCASTING');
         controller.startBroadcasting();
       }
+    } else {
+      print('STATE NOT READY');
+      controller.pauseScanning();
     }
   }
 
@@ -75,22 +78,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         _streamBluetooth.resume();
       }
       await checkAllRequirements();
-      if (controller.authorizationStatusOk &&
-          controller.locationServiceEnabled &&
-          controller.bluetoothEnabled) {
-        if (currentIndex == 0) {
-          controller.startScanning();
-        } else {
-          controller.pauseScanning();
-        }
-      } else {
-        if (currentIndex == 0) {
-          controller.pauseScanning();
-        } else {
-
-        }
-        await checkAllRequirements();
-      }
     } else if (state == AppLifecycleState.paused) {
       _streamBluetooth?.pause();
     }
@@ -106,85 +93,84 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: Obx(() => AppBar(
-              title: const Text('Flutter Beacon'),
-              centerTitle: false,
-              actions: <Widget>[
-                if (controller.locationServiceEnabled)
-                  if (!controller.authorizationStatusOk)
-                    IconButton(
-                      tooltip: 'Not Authorized',
-                      icon: Icon(Icons.portable_wifi_off),
-                      color: Colors.red,
-                      onPressed: () async {
-                        await flutterBeacon.requestAuthorization;
-                      },
-                    )
-                  else
-                    IconButton(
-                      tooltip: 'Authorized',
-                      icon: Icon(Icons.wifi_tethering),
-                      color: Colors.blue,
-                      onPressed: () async {
-                        await flutterBeacon.requestAuthorization;
-                      },
-                    ),
-                IconButton(
-                  tooltip: controller.locationServiceEnabled
-                      ? 'Location Service ON'
-                      : 'Location Service OFF',
-                  icon: Icon(
-                    controller.locationServiceEnabled
-                        ? Icons.location_on
-                        : Icons.location_off,
-                  ),
-                  color: controller.locationServiceEnabled
-                      ? Colors.blue
-                      : Colors.red,
-                  onPressed: controller.locationServiceEnabled
-                      ? () {}
-                      : handleOpenLocationSettings,
-                ),
-                StreamBuilder<BluetoothState>(
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final state = snapshot.data;
+      appBar: AppBar(
+        title: const Text('Flutter Beacon'),
+        centerTitle: false,
+        actions: <Widget>[
+          Obx(() {
+            if (!controller.locationServiceEnabled)
+              return IconButton(
+                tooltip: 'Not Determined',
+                icon: Icon(Icons.portable_wifi_off),
+                color: Colors.grey,
+                onPressed: () {},
+              );
 
-                      if (state == BluetoothState.stateOn) {
-                        return IconButton(
-                          tooltip: 'Bluetooth ON',
-                          icon: Icon(Icons.bluetooth_connected),
-                          onPressed: () {},
-                          color: Colors.lightBlueAccent,
-                        );
-                      }
+            if (!controller.authorizationStatusOk)
+              return IconButton(
+                tooltip: 'Not Authorized',
+                icon: Icon(Icons.portable_wifi_off),
+                color: Colors.red,
+                onPressed: () async {
+                  await flutterBeacon.requestAuthorization;
+                },
+              );
 
-                      if (state == BluetoothState.stateOff) {
-                        return IconButton(
-                          tooltip: 'Bluetooth OFF',
-                          icon: Icon(Icons.bluetooth),
-                          onPressed: handleOpenBluetooth,
-                          color: Colors.red,
-                        );
-                      }
+            return IconButton(
+              tooltip: 'Authorized',
+              icon: Icon(Icons.wifi_tethering),
+              color: Colors.blue,
+              onPressed: () async {
+                await flutterBeacon.requestAuthorization;
+              },
+            );
+          }),
+          Obx(() {
+            return IconButton(
+              tooltip: controller.locationServiceEnabled
+                  ? 'Location Service ON'
+                  : 'Location Service OFF',
+              icon: Icon(
+                controller.locationServiceEnabled
+                    ? Icons.location_on
+                    : Icons.location_off,
+              ),
+              color:
+                  controller.locationServiceEnabled ? Colors.blue : Colors.red,
+              onPressed: controller.locationServiceEnabled
+                  ? () {}
+                  : handleOpenLocationSettings,
+            );
+          }),
+          Obx(() {
+            final state = controller.bluetoothState.value;
 
-                      return IconButton(
-                        icon: Icon(Icons.bluetooth_disabled),
-                        tooltip: 'Bluetooth State Unknown',
-                        onPressed: () {},
-                        color: Colors.grey,
-                      );
-                    }
+            if (state == BluetoothState.stateOn) {
+              return IconButton(
+                tooltip: 'Bluetooth ON',
+                icon: Icon(Icons.bluetooth_connected),
+                onPressed: () {},
+                color: Colors.lightBlueAccent,
+              );
+            }
 
-                    return SizedBox.shrink();
-                  },
-                  stream: controller.bluetoothState.stream,
-                  initialData: BluetoothState.stateUnknown,
-                ),
-              ],
-            )),
+            if (state == BluetoothState.stateOff) {
+              return IconButton(
+                tooltip: 'Bluetooth OFF',
+                icon: Icon(Icons.bluetooth),
+                onPressed: handleOpenBluetooth,
+                color: Colors.red,
+              );
+            }
+
+            return IconButton(
+              icon: Icon(Icons.bluetooth_disabled),
+              tooltip: 'Bluetooth State Unknown',
+              onPressed: () {},
+              color: Colors.grey,
+            );
+          }),
+        ],
       ),
       body: IndexedStack(
         index: currentIndex,

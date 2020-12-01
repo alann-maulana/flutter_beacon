@@ -15,6 +15,8 @@ import android.provider.Settings;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.altbeacon.beacon.BeaconTransmitter;
+
 import java.lang.ref.WeakReference;
 
 class FlutterPlatform {
@@ -81,5 +83,13 @@ class FlutterPlatform {
     BluetoothAdapter adapter = bluetoothManager.getAdapter();
 
     return (adapter != null) && (adapter.isEnabled());
+  }
+  
+  boolean isBroadcastSupported() {
+    return BeaconTransmitter.checkTransmissionSupported(getActivity()) == 0;
+  }
+  
+  boolean shouldShowRequestPermissionRationale(String permission) {
+    return ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission);
   }
 }

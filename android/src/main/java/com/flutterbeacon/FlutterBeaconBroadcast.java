@@ -1,5 +1,6 @@
 package com.flutterbeacon;
 
+import android.app.Activity;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.os.Build;
@@ -8,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.BeaconTransmitter;
 
 import java.util.Map;
@@ -18,25 +20,17 @@ class FlutterBeaconBroadcast {
   private static final String TAG = FlutterBeaconBroadcast.class.getSimpleName();
   private final BeaconTransmitter beaconTransmitter;
 
-  FlutterBeaconBroadcast(FlutterBeaconPlugin plugin) {
-    this.beaconTransmitter = new BeaconTransmitter(plugin.getRegistrar().activity(), plugin.iBeaconLayout);
+  FlutterBeaconBroadcast(Activity activity, BeaconParser iBeaconLayout) {
+    this.beaconTransmitter = new BeaconTransmitter(activity, iBeaconLayout);
   }
   
   void isBroadcasting(@NonNull MethodChannel.Result result) {
-    if (beaconTransmitter != null) {
-      result.success(beaconTransmitter.isStarted());
-    } else {
-      result.success(false);
-    }
+    result.success(beaconTransmitter.isStarted());
   }
   
   void stopBroadcast(@NonNull MethodChannel.Result result) {
-    if (beaconTransmitter != null) {
-      beaconTransmitter.stopAdvertising();
-      result.success(true);
-    } else {
-      result.success(false);
-    }
+    beaconTransmitter.stopAdvertising();
+    result.success(true);
   }
   
   @SuppressWarnings("rawtypes")

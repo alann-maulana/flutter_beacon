@@ -1,5 +1,6 @@
 package com.flutterbeacon;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -12,6 +13,7 @@ import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,14 +25,16 @@ import io.flutter.plugin.common.EventChannel;
 class FlutterBeaconScanner {
   private static final String TAG = FlutterBeaconScanner.class.getSimpleName();
   private final FlutterBeaconPlugin plugin;
+  private final WeakReference<Activity> activity;
 
   private EventChannel.EventSink eventSinkRanging;
   private EventChannel.EventSink eventSinkMonitoring;
   private List<Region> regionRanging;
   private List<Region> regionMonitoring;
 
-  public FlutterBeaconScanner(FlutterBeaconPlugin plugin) {
+  public FlutterBeaconScanner(FlutterBeaconPlugin plugin, Activity activity) {
     this.plugin = plugin;
+    this.activity = new WeakReference<>(activity);
   }
 
   final EventChannel.StreamHandler rangingStreamHandler = new EventChannel.StreamHandler() {
@@ -244,17 +248,17 @@ class FlutterBeaconScanner {
 
     @Override
     public Context getApplicationContext() {
-      return plugin.getRegistrar().context().getApplicationContext();
+      return activity.get().getApplicationContext();
     }
 
     @Override
     public void unbindService(ServiceConnection serviceConnection) {
-      plugin.getRegistrar().context().unbindService(serviceConnection);
+      activity.get().unbindService(serviceConnection);
     }
 
     @Override
     public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
-      return plugin.getRegistrar().context().bindService(intent, serviceConnection, i);
+      return activity.get().bindService(intent, serviceConnection, i);
     }
   };
 }

@@ -17,6 +17,7 @@ cache:
 before_script:
   - git clone https://github.com/flutter/flutter.git -b stable --depth 1
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+  - export FLUTTER_ROOT=`pwd`/flutter
 install:
   - gem install coveralls-lcov
 script:

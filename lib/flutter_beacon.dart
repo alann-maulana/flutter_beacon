@@ -2,6 +2,7 @@
 //  Licensed under Apache License v2.0 that can be
 //  found in the LICENSE file.
 
+/// Flutter beacon library.
 library flutter_beacon;
 
 import 'dart:async';

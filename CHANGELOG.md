@@ -1,3 +1,8 @@
+## [0.4.0]
+* Update to Android v2 embedding
+* Add broadcast Beacon feature
+* Improve example app
+
 ## [0.3.0]
 
 * Update Android-Beacon-Library to version [2.16.3](https://github.com/AltBeacon/android-beacon-library/tree/2.16.3)

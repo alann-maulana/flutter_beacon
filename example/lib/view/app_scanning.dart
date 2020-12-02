@@ -39,7 +39,8 @@ class _TabScanningState extends State<TabScanning> {
     if (!controller.authorizationStatusOk ||
         !controller.locationServiceEnabled ||
         !controller.bluetoothEnabled) {
-      print('RETURNED, authorizationStatusOk=${controller.authorizationStatusOk}, '
+      print(
+          'RETURNED, authorizationStatusOk=${controller.authorizationStatusOk}, '
           'locationServiceEnabled=${controller.locationServiceEnabled}, '
           'bluetoothEnabled=${controller.bluetoothEnabled}');
       return;
@@ -60,18 +61,18 @@ class _TabScanningState extends State<TabScanning> {
 
     _streamRanging =
         flutterBeacon.ranging(regions).listen((RangingResult result) {
-          print(result);
-          if (result != null && mounted) {
-            setState(() {
-              _regionBeacons[result.region] = result.beacons;
-              _beacons.clear();
-              _regionBeacons.values.forEach((list) {
-                _beacons.addAll(list);
-              });
-              _beacons.sort(_compareParameters);
-            });
-          }
+      print(result);
+      if (result != null && mounted) {
+        setState(() {
+          _regionBeacons[result.region] = result.beacons;
+          _beacons.clear();
+          _regionBeacons.values.forEach((list) {
+            _beacons.addAll(list);
+          });
+          _beacons.sort(_compareParameters);
         });
+      }
+    });
   }
 
   pauseScanBeacon() async {
@@ -109,41 +110,41 @@ class _TabScanningState extends State<TabScanning> {
       body: _beacons == null || _beacons.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: _beacons.map(
-                (beacon) {
-              return ListTile(
-                title: Text(
-                  beacon.proximityUUID,
-                  style: TextStyle(fontSize: 15.0),
-                ),
-                subtitle: new Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Flexible(
-                      child: Text(
-                        'Major: ${beacon.major}\nMinor: ${beacon.minor}',
-                        style: TextStyle(fontSize: 13.0),
+              children: ListTile.divideTiles(
+                context: context,
+                tiles: _beacons.map(
+                  (beacon) {
+                    return ListTile(
+                      title: Text(
+                        beacon.proximityUUID,
+                        style: TextStyle(fontSize: 15.0),
                       ),
-                      flex: 1,
-                      fit: FlexFit.tight,
-                    ),
-                    Flexible(
-                      child: Text(
-                        'Accuracy: ${beacon.accuracy}m\nRSSI: ${beacon.rssi}',
-                        style: TextStyle(fontSize: 13.0),
+                      subtitle: new Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Flexible(
+                            child: Text(
+                              'Major: ${beacon.major}\nMinor: ${beacon.minor}',
+                              style: TextStyle(fontSize: 13.0),
+                            ),
+                            flex: 1,
+                            fit: FlexFit.tight,
+                          ),
+                          Flexible(
+                            child: Text(
+                              'Accuracy: ${beacon.accuracy}m\nRSSI: ${beacon.rssi}',
+                              style: TextStyle(fontSize: 13.0),
+                            ),
+                            flex: 2,
+                            fit: FlexFit.tight,
+                          )
+                        ],
                       ),
-                      flex: 2,
-                      fit: FlexFit.tight,
-                    )
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ).toList(),
-      ),
+              ).toList(),
+            ),
     );
   }
 }

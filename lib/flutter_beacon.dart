@@ -9,14 +9,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+part 'beacon/authorization_status.dart';
 part 'beacon/beacon.dart';
 part 'beacon/beacon_broadcast.dart';
 part 'beacon/bluetooth_state.dart';
-part 'beacon/authorization_status.dart';
 part 'beacon/monitoring_result.dart';
 part 'beacon/ranging_result.dart';
 part 'beacon/region.dart';

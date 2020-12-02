@@ -18,11 +18,15 @@ before_script:
   - git clone https://github.com/flutter/flutter.git -b stable --depth 1
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
   - export FLUTTER_ROOT=`pwd`/flutter
-  - pub global activate dartdoc
 install:
   - gem install coveralls-lcov
 script:
   - flutter doctor -v
+  - which pub
+  - pub --version
+  - pub global activate dartdoc
+  - which dartdoc
+  - dartdoc --version
   - make
 after_success:
   - coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info

@@ -24,7 +24,7 @@ script:
   - flutter doctor -v
   - which pub
   - pub --version
-  - pub global activate dartdoc 0.31.0
+  - pub global activate dartdoc
   - which dartdoc
   - dartdoc --version
   - make

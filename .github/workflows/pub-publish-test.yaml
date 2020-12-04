@@ -1,4 +1,4 @@
-name: Pub Publish Dry Run
+name: Pub Publish
 
 on:
   push:
@@ -21,7 +21,10 @@ jobs:
         with:
           flutter-version: '1.22.4'
           channel: 'stable'
-      - run: make
-      - run: bash scripts/deploy.sh
+      - run: bash scripts/credentials.sh
       - run: rm -rf scripts/
+      - run: make
+      - run: make deps
+      - run: pub global activate dartdoc
+      - run: make docs
       - run: pub publish -n -v

@@ -52,5 +52,5 @@ jobs:
     - run: cat ./coverage/lcov.info
     - name: Send to coveralls.io
       run: coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
-      with:
+      env:
         COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}

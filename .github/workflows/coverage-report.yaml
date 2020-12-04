@@ -39,6 +39,7 @@ jobs:
     needs: codecov_io
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: "Download coverage"
       uses: actions/download-artifact@v1
       with:

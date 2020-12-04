@@ -37,6 +37,7 @@ jobs:
   coveralls_io:
     name: "Coveralls.io"
     needs: codecov_io
+    runs-on: ubuntu-latest
     steps:
     - name: "Download coverage"
       uses: actions/download-artifact@v1

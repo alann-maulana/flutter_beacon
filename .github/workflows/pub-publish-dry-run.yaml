@@ -1,4 +1,4 @@
-name: Flutter CI
+name: Pub Publish Dry Run
 
 on:
   push:
@@ -10,11 +10,8 @@ on:
 
 jobs:
   build:
-    name: Build & Test on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    name: Publishing Test (Dry Run)
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
@@ -24,7 +21,7 @@ jobs:
         with:
           flutter-version: '1.22.4'
           channel: 'stable'
-      - run: flutter packages get
-      - run: flutter format --set-exit-if-changed .
-      - run: flutter analyze .
-      - run: flutter test
+      - run: make
+      - run: bash scripts/deploy.sh
+      - run: rm -rf scripts/
+      - run: pub publish -n -v

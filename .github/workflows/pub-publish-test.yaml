@@ -21,6 +21,7 @@ jobs:
         with:
           flutter-version: '1.22.4'
           channel: 'stable'
+      - run: export FLUTTER_ROOT=$FLUTTER_HOME
       - run: bash scripts/credentials.sh
       - run: rm -rf scripts/
       - run: make

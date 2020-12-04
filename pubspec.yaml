@@ -16,5 +16,9 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: com.flutterbeacon
-    pluginClass: FlutterBeaconPlugin
+    platforms:
+      android:
+        package: com.flutterbeacon
+        pluginClass: FlutterBeaconPlugin
+      ios:
+        pluginClass: FlutterBeaconPlugin

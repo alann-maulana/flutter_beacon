@@ -3,6 +3,7 @@ package com.flutterbeacon;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.RemoteException;
 
 import androidx.annotation.NonNull;
 
@@ -158,6 +159,17 @@ public class FlutterBeaconPlugin implements FlutterPlugin, ActivityAware, Method
       if (beaconManager != null && !beaconManager.isBound(beaconScanner.beaconConsumer)) {
         this.flutterResult = result;
         this.beaconManager.bind(beaconScanner.beaconConsumer);
+
+        if (call.hasArgument("scanPeriod")) {
+          int scanPeriod = call.argument("scanPeriod");
+          this.beaconManager.setForegroundScanPeriod(scanPeriod);
+          try {
+            this.beaconManager.updateScanPeriods();
+          } catch (RemoteException e) {
+            result.success(false);
+          }
+        }
+
         return;
       }
 

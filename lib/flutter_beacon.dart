@@ -55,6 +55,7 @@ class FlutterBeacon {
   /// This information does not change from call to call. Cache it.
   Stream<AuthorizationStatus>? _onAuthorizationStatus;
 
+
   /// Initialize scanning API.
   Future<bool> get initializeScanning async {
     final result = await _methodChannel.invokeMethod('initialize');
@@ -176,6 +177,12 @@ class FlutterBeacon {
     }
 
     return result == 1;
+  }
+
+  /// Customize duration of the beacon scan on the Android Platform.
+  Future<bool> setAndroidScanPeriod(int scanPeriod) async {
+    return await _methodChannel
+        .invokeMethod('setScanPeriod', {"scanPeriod": scanPeriod});
   }
 
   /// Close scanning API.

@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   listeningState() async {
     print('Listening to bluetooth state');
-    _streamBluetooth = flutterBeacon.bluetoothStateChanged.listen((BluetoothState state) async {
+    _streamBluetooth = flutterBeacon.bluetoothStateChanged().listen((BluetoothState state) async {
       controller.updateBluetoothState(state);
       await checkAllRequirements();
     });

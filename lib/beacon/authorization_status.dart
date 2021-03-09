@@ -87,10 +87,14 @@ class AuthorizationStatus {
 
   /// Shows that authorization has not been determined by user.
   ///
-  /// Only for iOS
   static const AuthorizationStatus notDetermined = AuthorizationStatus.init(
     'NOT_DETERMINED',
-    isAndroid: false,
+    isAndroid: true,
     isIOS: true,
   );
+
+  @override
+  String toString() {
+    return value;
+  }
 }

@@ -7,12 +7,17 @@
 #import "FBMonitoringStreamHandler.h"
 #import "FBAuthorizationStatusHandler.h"
 
-@interface FlutterBeaconPlugin() <CLLocationManagerDelegate, CBCentralManagerDelegate>
+@interface FlutterBeaconPlugin() <CLLocationManagerDelegate, CBCentralManagerDelegate, CBPeripheralManagerDelegate>
+
+@property (assign, nonatomic) CLAuthorizationStatus defaultLocationAuthorizationType;
+@property (assign) BOOL shouldStartAdvertise;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CBCentralManager *bluetoothManager;
+@property (strong, nonatomic) CBPeripheralManager *peripheralManager;
 @property (strong, nonatomic) NSMutableArray *regionRanging;
 @property (strong, nonatomic) NSMutableArray *regionMonitoring;
+@property (strong, nonatomic) NSDictionary *beaconPeripheralData;
 
 @property (strong, nonatomic) FBRangingStreamHandler* rangingHandler;
 @property (strong, nonatomic) FBMonitoringStreamHandler* monitoringHandler;
@@ -21,6 +26,7 @@
 
 @property FlutterResult flutterResult;
 @property FlutterResult flutterBluetoothResult;
+@property FlutterResult flutterBroadcastResult;
 
 @end
 
@@ -56,6 +62,16 @@
     [streamChannelAuthorization setStreamHandler:instance.authorizationHandler];
 }
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        // Earlier versions of flutter_beacon only supported "always" permission,
+        // so set this as the default to stay backwards compatible.
+        self.defaultLocationAuthorizationType = kCLAuthorizationStatusAuthorizedAlways;
+    }
+    return self;
+}
+
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"initialize" isEqualToString:call.method]) {
         [self initializeLocationManager];
@@ -69,6 +85,24 @@
         return;
     }
     
+    if ([@"setLocationAuthorizationTypeDefault" isEqualToString:call.method]) {
+        if (call.arguments != nil && [call.arguments isKindOfClass:[NSString class]]) {
+            NSString *argumentAsString = (NSString*)call.arguments;
+            if ([@"ALWAYS" isEqualToString:argumentAsString]) {
+                self.defaultLocationAuthorizationType = kCLAuthorizationStatusAuthorizedAlways;
+                result(@(YES));
+                return;
+            }
+            if ([@"WHEN_IN_USE" isEqualToString:argumentAsString]) {
+                self.defaultLocationAuthorizationType = kCLAuthorizationStatusAuthorizedWhenInUse;
+                result(@(YES));
+                return;
+            }
+        }
+        result(@(NO));
+        return;
+    }
+
     if ([@"authorizationStatus" isEqualToString:call.method]) {
         [self initializeLocationManager];
         
@@ -133,7 +167,7 @@
     if ([@"requestAuthorization" isEqualToString:call.method]) {
         if (self.locationManager) {
             self.flutterResult = result;
-            [self.locationManager requestAlwaysAuthorization];
+            [self requestDefaultLocationManagerAuthorization];
         } else {
             result(@(YES));
         }
@@ -141,11 +175,47 @@
     }
     
     if ([@"openBluetoothSettings" isEqualToString:call.method]) {
-        // not implemented
+        // do nothing
+        
+        // Beware, this is considered as a private API and Apple will rejecte your application
+        // Uncomment these codes below if your want to publish this app privately
+        /*
+        NSString *settingsUrl= @"App-Prefs:root=Bluetooth";
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+            if (@available(iOS 10.0, *)) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl] options:@{} completionHandler:^(BOOL success) {
+                    NSLog(@"Bluetooth settings opened");
+                }];
+            } else {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl]];
+            }
+        }
+         */
+        
+        result(@(YES));
+        return;
     }
     
     if ([@"openLocationSettings" isEqualToString:call.method]) {
-        // not implemented
+        // // do nothing
+        
+        // Beware, this is considered as a private API and Apple will reject your application
+        // Uncomment these codes below if your want to publish this app privately
+        /*
+        NSString *settingsUrl= @"App-Prefs:root=Privacy&path=LOCATION";
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+            if (@available(iOS 10.0, *)) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl] options:@{} completionHandler:^(BOOL success) {
+                    NSLog(@"Location settings opened");
+                }];
+            } else {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:settingsUrl]];
+            }
+        }
+         */
+        
+        result(@(YES));
+        return;
     }
     
     if ([@"openApplicationSettings" isEqualToString:call.method]) {
@@ -157,6 +227,34 @@
     if ([@"close" isEqualToString:call.method]) {
         [self stopRangingBeacon];
         [self stopMonitoringBeacon];
+        result(@(YES));
+        return;
+    }
+    
+    if ([@"startBroadcast" isEqualToString:call.method]) {
+        self.flutterBroadcastResult = result;
+        [self startBroadcast:call.arguments];
+        return;
+    }
+    
+    if ([@"stopBroadcast" isEqualToString:call.method]) {
+        if (self.peripheralManager) {
+            [self.peripheralManager stopAdvertising];
+        }
+        result(nil);
+        return;
+    }
+    
+    if ([@"isBroadcasting" isEqualToString:call.method]) {
+        if (self.peripheralManager) {
+            result(@([self.peripheralManager isAdvertising]));
+        } else {
+            result(@(NO));
+        }
+        return;
+    }
+    
+    if ([@"isBroadcastSupported" isEqualToString:call.method]) {
         result(@(YES));
         return;
     }
@@ -177,6 +275,19 @@
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
     }
+}
+
+- (void) startBroadcast:(id)arguments {
+    NSDictionary *dict = arguments;
+    NSNumber *measuredPower = nil;
+    if (dict[@"txPower"] != [NSNull null]) {
+        measuredPower = dict[@"txPower"];
+    }
+    CLBeaconRegion *region = [FBUtils regionFromDictionary:dict];
+    
+    self.shouldStartAdvertise = YES;
+    self.beaconPeripheralData = [region peripheralDataWithMeasuredPower:measuredPower];
+    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
 }
 
 ///------------------------------------------------------------
@@ -329,8 +440,7 @@
             }
             if ([CLLocationManager locationServicesEnabled]) {
                 if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
-                    //[self.locationManager requestWhenInUseAuthorization];
-                    [self.locationManager requestAlwaysAuthorization];
+                    [self requestDefaultLocationManagerAuthorization];
                     return;
                 } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
                     message = @"CLAuthorizationStatusDenied";
@@ -356,6 +466,18 @@
 ///------------------------------------------------------------
 #pragma mark - Location Manager
 ///------------------------------------------------------------
+
+- (void)requestDefaultLocationManagerAuthorization {
+    switch (self.defaultLocationAuthorizationType) {
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+            [self.locationManager requestWhenInUseAuthorization];
+            break;
+        case kCLAuthorizationStatusAuthorizedAlways:
+        default:
+            [self.locationManager requestAlwaysAuthorization];
+            break;
+    }
+}
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     NSString *message = nil;
@@ -489,6 +611,36 @@
                                               });
         }
     }
+}
+
+///------------------------------------------------------------
+#pragma mark - Peripheral Manager
+///------------------------------------------------------------
+
+- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
+    switch (peripheral.state) {
+        case CBPeripheralManagerStatePoweredOn:
+            if (self.shouldStartAdvertise) {
+                [peripheral startAdvertising:self.beaconPeripheralData];
+                self.shouldStartAdvertise = NO;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(nullable NSError *)error {
+    if (!self.flutterBroadcastResult) {
+        return;
+    }
+    
+    if (error) {
+        self.flutterBroadcastResult([FlutterError errorWithCode:@"Broadcast" message:error.localizedDescription details:error]);
+    } else {
+        self.flutterBroadcastResult(@(peripheral.isAdvertising));
+    }
+    self.flutterBroadcastResult = nil;
 }
 
 @end

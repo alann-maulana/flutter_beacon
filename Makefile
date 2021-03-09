@@ -22,7 +22,7 @@ pana:
 
 docs:
 	rm -rf doc
-	dartdoc --exclude 'dart:async,dart:collection,dart:convert,dart:core,dart:developer,dart:io,dart:isolate,dart:math,dart:typed_data,dart:ui,dart:html_common,dart:ffi,dart:html,dart:js,dart:js_util'
+	dartdoc --exclude 'dart:async,dart:collection,dart:convert,dart:core,dart:developer,dart:io,dart:isolate,dart:math,dart:typed_data,dart:ui,dart:html_common,dart:ffi,dart:html,dart:js,dart:js_util' --ignore 'ambiguous-doc-reference'
 
 publish:
 	pub publish

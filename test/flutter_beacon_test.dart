@@ -58,6 +58,14 @@ void main() {
         return true;
       }
 
+      if (method == 'isBroadcasting') {
+        return false;
+      }
+
+      if (method == 'isBroadcastSupported') {
+        return true;
+      }
+
       throw MissingPluginException(
           'No implementation found for method $method on channel ${channel.name}');
     });
@@ -355,6 +363,18 @@ void main() {
     test('authorizationStatusChanged', () async {
       final result = await flutterBeacon.authorizationStatusChanged().first;
       expect(result.value, 'ALLOWED');
+    });
+  });
+
+  group('Event channel - broadcast', () {
+    test('isBroadcastSupported', () async {
+      final result = await flutterBeacon.isBroadcastSupported();
+      expect(result, true);
+    });
+
+    test('isBroadcasting', () async {
+      final result = await flutterBeacon.isBroadcasting();
+      expect(result, false);
     });
   });
 }

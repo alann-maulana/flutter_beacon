@@ -5,11 +5,7 @@
 part of flutter_beacon;
 
 /// Enum for defining monitoring event type.
-enum MonitoringEventType {
-  didEnterRegion,
-  didExitRegion,
-  didDetermineStateForRegion
-}
+enum MonitoringEventType { didEnterRegion, didExitRegion, didDetermineStateForRegion }
 
 /// Enum for defining monitoring state
 enum MonitoringState { inside, outside, unknown }
@@ -17,12 +13,12 @@ enum MonitoringState { inside, outside, unknown }
 /// Class for managing monitoring result from scanning iBeacon process.
 class MonitoringResult {
   /// The [MonitoringEventType] of monitoring result
-  final MonitoringEventType monitoringEventType;
+  final MonitoringEventType? monitoringEventType;
 
   /// The [MonitoringState] of monitoring result
   ///
   /// This value is not null when [monitoringEventType] is [MonitoringEventType.didDetermineStateForRegion]
-  final MonitoringState monitoringState;
+  final MonitoringState? monitoringState;
 
   /// The [Region] of ranging result.
   final Region region;
@@ -34,7 +30,7 @@ class MonitoringResult {
         this.region = Region.fromJson(json['region']);
 
   /// Parsing dynamic state into [MonitoringState].
-  static MonitoringState _parseMonitoringState(dynamic state) {
+  static MonitoringState? _parseMonitoringState(dynamic state) {
     if (!(state is String)) {
       return null;
     }
@@ -51,7 +47,7 @@ class MonitoringResult {
   }
 
   /// Parsing dynamic event into [MonitoringEventType]
-  static MonitoringEventType _parseMonitoringEventType(dynamic event) {
+  static MonitoringEventType? _parseMonitoringEventType(dynamic event) {
     if (event == 'didEnterRegion') {
       return MonitoringEventType.didEnterRegion;
     } else if (event == 'didExitRegion') {

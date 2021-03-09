@@ -18,8 +18,8 @@ class AuthorizationStatus {
   @visibleForTesting
   const AuthorizationStatus.init(
     this.value, {
-    this.isAndroid,
-    this.isIOS,
+    this.isAndroid = false,
+    this.isIOS = false,
   });
 
   @visibleForTesting
@@ -39,7 +39,7 @@ class AuthorizationStatus {
         return notDetermined;
     }
 
-    return null;
+    return denied;
   }
 
   /// Shows that user allowed the authorization.

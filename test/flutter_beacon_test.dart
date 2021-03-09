@@ -8,12 +8,9 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   const MethodChannel channel = MethodChannel('flutter_beacon');
   const MethodChannel rangingChannel = MethodChannel('flutter_beacon_event');
-  const MethodChannel monitoringChannel =
-      MethodChannel('flutter_beacon_event_monitoring');
-  const MethodChannel bluetoothChannel =
-      MethodChannel('flutter_bluetooth_state_changed');
-  const MethodChannel authorizationChannel =
-      MethodChannel('flutter_authorization_status_changed');
+  const MethodChannel monitoringChannel = MethodChannel('flutter_beacon_event_monitoring');
+  const MethodChannel bluetoothChannel = MethodChannel('flutter_bluetooth_state_changed');
+  const MethodChannel authorizationChannel = MethodChannel('flutter_authorization_status_changed');
 
   setUpAll(() {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
@@ -66,22 +63,20 @@ void main() {
         return true;
       }
 
-      throw MissingPluginException(
-          'No implementation found for method $method on channel ${channel.name}');
+      throw MissingPluginException('No implementation found for method $method on channel ${channel.name}');
     });
 
     rangingChannel.setMockMethodCallHandler((MethodCall methodCall) async {
       final args = methodCall.arguments;
       if (args is List) {
         if (args.isEmpty) {
-          throw PlatformException(
-              code: 'error', message: 'region ranging is empty');
+          throw PlatformException(code: 'error', message: 'region ranging is empty');
         }
         List<Region> regions = args.map((arg) {
           return Region.fromJson(arg);
         }).toList();
 
-        ServicesBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
+        ServicesBinding.instance?.defaultBinaryMessenger.handlePlatformMessage(
           rangingChannel.name,
           const StandardMethodCodec().encodeSuccessEnvelope({
             'region': regions.first.toJson,
@@ -104,7 +99,7 @@ void main() {
               }
             ]
           }),
-          (ByteData data) {},
+          (ByteData? data) {},
         );
         return;
       }
@@ -117,8 +112,7 @@ void main() {
 
       if (args is List) {
         if (args.isEmpty) {
-          throw PlatformException(
-              code: 'error', message: 'region monitoring is empty');
+          throw PlatformException(code: 'error', message: 'region monitoring is empty');
         }
         List<Region> regions = args.map((arg) {
           return Region.fromJson(arg);
@@ -145,35 +139,32 @@ void main() {
           }
 
           if (result != null) {
-            ServicesBinding.instance.defaultBinaryMessenger
-                .handlePlatformMessage(
+            ServicesBinding.instance?.defaultBinaryMessenger.handlePlatformMessage(
               monitoringChannel.name,
               const StandardMethodCodec().encodeSuccessEnvelope(result),
-              (ByteData data) {},
+              (ByteData? data) {},
             );
           }
         });
         return;
       }
 
-      throw PlatformException(
-          code: 'error', message: 'invalid region monitoring');
+      throw PlatformException(code: 'error', message: 'invalid region monitoring');
     });
 
     bluetoothChannel.setMockMethodCallHandler((MethodCall methodCall) async {
-      ServicesBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
+      ServicesBinding.instance?.defaultBinaryMessenger.handlePlatformMessage(
         bluetoothChannel.name,
         const StandardMethodCodec().encodeSuccessEnvelope('STATE_ON'),
-        (ByteData data) {},
+        (ByteData? data) {},
       );
     });
 
-    authorizationChannel
-        .setMockMethodCallHandler((MethodCall methodCall) async {
-      ServicesBinding.instance.defaultBinaryMessenger.handlePlatformMessage(
+    authorizationChannel.setMockMethodCallHandler((MethodCall methodCall) async {
+      ServicesBinding.instance?.defaultBinaryMessenger.handlePlatformMessage(
         authorizationChannel.name,
         const StandardMethodCodec().encodeSuccessEnvelope('ALLOWED'),
-        (ByteData data) {},
+        (ByteData? data) {},
       );
     });
   });
@@ -268,23 +259,19 @@ void main() {
   group('Event channel - ranging', () {
     test('didRangeBeaconsInRegion', () async {
       final regions = <Region>[
-        Region.fromJson({
-          'identifier': 'Cubeacon',
-          'proximityUUID': 'CB10023F-A318-3394-4199-A8730C7C1AEC'
-        }),
+        Region.fromJson({'identifier': 'Cubeacon', 'proximityUUID': 'CB10023F-A318-3394-4199-A8730C7C1AEC'}),
       ];
       final result = await flutterBeacon.ranging(regions).first;
       expect(result.region, isNotNull);
       expect(result.region.identifier, 'Cubeacon');
-      expect(
-          result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
+      expect(result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
       expect(result.beacons, isNotEmpty);
       expect(result.beacons.length, 2);
     });
   });
 
   group('Event channel - monitoring', () {
-    Stream<MonitoringResult> stream;
+    late Stream<MonitoringResult> stream;
 
     setUpAll(() {
       final regions = <Region>[
@@ -316,8 +303,7 @@ void main() {
 
       expect(result.region, isNotNull);
       expect(result.region.identifier, 'onEnter');
-      expect(
-          result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
+      expect(result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
       expect(result.region.major, 1);
       expect(result.region.minor, 1);
       expect(result.monitoringState, isNull);
@@ -329,8 +315,7 @@ void main() {
 
       expect(result.region, isNotNull);
       expect(result.region.identifier, 'onExit');
-      expect(
-          result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
+      expect(result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
       expect(result.region.major, 2);
       expect(result.region.minor, 2);
       expect(result.monitoringState, isNull);
@@ -342,26 +327,24 @@ void main() {
 
       expect(result.region, isNotNull);
       expect(result.region.identifier, 'onDetermine');
-      expect(
-          result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
+      expect(result.region.proximityUUID, 'CB10023F-A318-3394-4199-A8730C7C1AEC');
       expect(result.region.major, 3);
       expect(result.region.minor, 3);
       expect(result.monitoringState, MonitoringState.unknown);
-      expect(result.monitoringEventType,
-          MonitoringEventType.didDetermineStateForRegion);
+      expect(result.monitoringEventType, MonitoringEventType.didDetermineStateForRegion);
     });
   });
 
   group('Event channel - bluetooth state', () {
     test('bluetoothStateChanged', () async {
-      final result = await flutterBeacon.bluetoothStateChanged().first;
+      final result = await flutterBeacon.bluetoothStateChanged.first;
       expect(result.value, 'STATE_ON');
     });
   });
 
   group('Event channel - authorization status', () {
     test('authorizationStatusChanged', () async {
-      final result = await flutterBeacon.authorizationStatusChanged().first;
+      final result = await flutterBeacon.authorizationStatusChanged.first;
       expect(result.value, 'ALLOWED');
     });
   });

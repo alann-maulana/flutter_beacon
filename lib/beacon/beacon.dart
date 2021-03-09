@@ -10,32 +10,32 @@ enum Proximity { unknown, immediate, near, far }
 /// Class for managing Beacon object.
 class Beacon {
   /// The proximity UUID of beacon.
-  final String proximityUUID;
+  final String? proximityUUID;
 
   /// The mac address of beacon.
   ///
   /// From iOS this value will be null
-  final String macAddress;
+  final String? macAddress;
 
   /// The major value of beacon.
-  final int major;
+  final int? major;
 
   /// The minor value of beacon.
-  final int minor;
+  final int? minor;
 
   /// The rssi value of beacon.
-  final int rssi;
+  final int? rssi;
 
   /// The transmission power of beacon.
   ///
   /// From iOS this value will be null
-  final int txPower;
+  final int? txPower;
 
   /// The accuracy of distance of beacon in meter.
-  final double accuracy;
+  final double? accuracy;
 
   /// The proximity of beacon.
-  final Proximity _proximity;
+  final Proximity? _proximity;
 
   /// Create beacon object.
   const Beacon({
@@ -46,7 +46,7 @@ class Beacon {
     this.rssi,
     this.txPower,
     this.accuracy,
-    Proximity proximity,
+    Proximity? proximity,
   }) : this._proximity = proximity;
 
   /// Create beacon object from json.
@@ -65,7 +65,7 @@ class Beacon {
   /// Parsing dynamic data into double.
   static double _parseDouble(dynamic data) {
     if (data is num) {
-      return data;
+      return data as double;
     } else if (data is String) {
       return double.tryParse(data) ?? 0.0;
     }
@@ -76,7 +76,7 @@ class Beacon {
   /// Parsing dynamic data into integer.
   static int _parseInt(dynamic data) {
     if (data is num) {
-      return data;
+      return data as int;
     } else if (data is String) {
       return int.tryParse(data) ?? 0;
     }
@@ -113,26 +113,19 @@ class Beacon {
       }).toList();
     }
 
-    return null;
+    return [];
   }
 
   /// Parsing [List] of [Beacon] into array of [Map].
-  static dynamic beaconArrayToJson(List<Beacon> beacons) {
-    return beacons.map((beacon) {
+  static dynamic beaconArrayToJson(List<Beacon>? beacons) {
+    return beacons?.map((beacon) {
       return beacon.toJson;
     }).toList();
   }
 
   /// Serialize current instance object into [Map].
   dynamic get toJson {
-    final map = <String, dynamic>{
-      'proximityUUID': proximityUUID,
-      'major': major,
-      'minor': minor,
-      'rssi': rssi ?? -1,
-      'accuracy': accuracy,
-      'proximity': proximity.toString().split('.').last
-    };
+    final map = <String, dynamic>{'proximityUUID': proximityUUID, 'major': major, 'minor': minor, 'rssi': rssi ?? -1, 'accuracy': accuracy, 'proximity': proximity.toString().split('.').last};
 
     if (Platform.isAndroid) {
       map['txPower'] = txPower ?? -1;
@@ -150,11 +143,12 @@ class Beacon {
   /// - `accuracy > 0 && accuracy <= 0.5` : [Proximity.immediate]
   /// - `accuracy > 0.5 && accuracy < 3.0` : [Proximity.near]
   /// - `accuracy > 3.0` : [Proximity.far]
-  Proximity get proximity {
+  Proximity? get proximity {
     if (_proximity != null) {
       return _proximity;
     }
 
+    final accuracy = this.accuracy ?? 0.0;
     if (accuracy == 0.0) {
       return Proximity.unknown;
     }

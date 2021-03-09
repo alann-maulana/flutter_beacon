@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
 import 'package:get/get.dart';
 
@@ -12,7 +12,7 @@ class TabScanning extends StatefulWidget {
 }
 
 class _TabScanningState extends State<TabScanning> {
-  StreamSubscription<RangingResult> _streamRanging;
+  StreamSubscription<RangingResult>? _streamRanging;
   final _regionBeacons = <Region, List<Beacon>>{};
   final _beacons = <Beacon>[];
   final controller = Get.find<RequirementStateController>();
@@ -36,11 +36,8 @@ class _TabScanningState extends State<TabScanning> {
 
   initScanBeacon() async {
     await flutterBeacon.initializeScanning;
-    if (!controller.authorizationStatusOk ||
-        !controller.locationServiceEnabled ||
-        !controller.bluetoothEnabled) {
-      print(
-          'RETURNED, authorizationStatusOk=${controller.authorizationStatusOk}, '
+    if (!controller.authorizationStatusOk || !controller.locationServiceEnabled || !controller.bluetoothEnabled) {
+      print('RETURNED, authorizationStatusOk=${controller.authorizationStatusOk}, '
           'locationServiceEnabled=${controller.locationServiceEnabled}, '
           'bluetoothEnabled=${controller.bluetoothEnabled}');
       return;
@@ -53,14 +50,13 @@ class _TabScanningState extends State<TabScanning> {
     ];
 
     if (_streamRanging != null) {
-      if (_streamRanging.isPaused) {
-        _streamRanging.resume();
+      if (_streamRanging!.isPaused) {
+        _streamRanging!.resume();
         return;
       }
     }
 
-    _streamRanging =
-        flutterBeacon.ranging(regions).listen((RangingResult result) {
+    _streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
       print(result);
       if (result != null && mounted) {
         setState(() {
@@ -85,14 +81,21 @@ class _TabScanningState extends State<TabScanning> {
   }
 
   int _compareParameters(Beacon a, Beacon b) {
-    int compare = a.proximityUUID.compareTo(b.proximityUUID);
-
-    if (compare == 0) {
-      compare = a.major.compareTo(b.major);
+    int compare = 0;
+    if (a.proximityUUID != null && b.proximityUUID != null) {
+      compare = a.proximityUUID!.compareTo(b.proximityUUID!);
     }
 
     if (compare == 0) {
-      compare = a.minor.compareTo(b.minor);
+      if (a.major != null && b.major != null) {
+        compare = a.major!.compareTo(b.major!);
+      }
+    }
+
+    if (compare == 0) {
+      if (a.minor != null && b.minor != null) {
+        compare = a.minor!.compareTo(b.minor!);
+      }
     }
 
     return compare;
@@ -116,7 +119,7 @@ class _TabScanningState extends State<TabScanning> {
                   (beacon) {
                     return ListTile(
                       title: Text(
-                        beacon.proximityUUID,
+                        beacon.proximityUUID ?? '',
                         style: TextStyle(fontSize: 15.0),
                       ),
                       subtitle: new Row(

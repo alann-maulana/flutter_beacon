@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
 import 'package:get/get.dart';
 
-import 'app_scanning.dart';
-import 'app_broadcasting.dart';
 import '../controller/requirement_state_controller.dart';
+import 'app_broadcasting.dart';
+import 'app_scanning.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -17,12 +17,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final controller = Get.find<RequirementStateController>();
-  StreamSubscription<BluetoothState> _streamBluetooth;
+  StreamSubscription<BluetoothState>? _streamBluetooth;
   int currentIndex = 0;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
 
     super.initState();
 
@@ -31,9 +31,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   listeningState() async {
     print('Listening to bluetooth state');
-    _streamBluetooth = flutterBeacon
-        .bluetoothStateChanged()
-        .listen((BluetoothState state) async {
+    _streamBluetooth = flutterBeacon.bluetoothStateChanged.listen((BluetoothState state) async {
       controller.updateBluetoothState(state);
       await checkAllRequirements();
     });
@@ -48,14 +46,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     controller.updateAuthorizationStatus(authorizationStatus);
     print('AUTHORIZATION $authorizationStatus');
 
-    final locationServiceEnabled =
-        await flutterBeacon.checkLocationServicesIfEnabled;
+    final locationServiceEnabled = await flutterBeacon.checkLocationServicesIfEnabled;
     controller.updateLocationService(locationServiceEnabled);
     print('LOCATION SERVICE $locationServiceEnabled');
 
-    if (controller.bluetoothEnabled &&
-        controller.authorizationStatusOk &&
-        controller.locationServiceEnabled) {
+    if (controller.bluetoothEnabled && controller.authorizationStatusOk && controller.locationServiceEnabled) {
       print('STATE READY');
       if (currentIndex == 0) {
         print('SCANNING');
@@ -74,8 +69,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     print('AppLifecycleState = $state');
     if (state == AppLifecycleState.resumed) {
-      if (_streamBluetooth != null && _streamBluetooth.isPaused) {
-        _streamBluetooth.resume();
+      if (_streamBluetooth?.isPaused ?? false) {
+        _streamBluetooth?.resume();
       }
       await checkAllRequirements();
     } else if (state == AppLifecycleState.paused) {
@@ -127,19 +122,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }),
           Obx(() {
             return IconButton(
-              tooltip: controller.locationServiceEnabled
-                  ? 'Location Service ON'
-                  : 'Location Service OFF',
+              tooltip: controller.locationServiceEnabled ? 'Location Service ON' : 'Location Service OFF',
               icon: Icon(
-                controller.locationServiceEnabled
-                    ? Icons.location_on
-                    : Icons.location_off,
+                controller.locationServiceEnabled ? Icons.location_on : Icons.location_off,
               ),
-              color:
-                  controller.locationServiceEnabled ? Colors.blue : Colors.red,
-              onPressed: controller.locationServiceEnabled
-                  ? () {}
-                  : handleOpenLocationSettings,
+              color: controller.locationServiceEnabled ? Colors.blue : Colors.red,
+              onPressed: controller.locationServiceEnabled ? () {} : handleOpenLocationSettings,
             );
           }),
           Obx(() {

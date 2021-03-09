@@ -11,10 +11,8 @@ class RequirementStateController extends GetxController {
   var _pauseScanning = false.obs;
 
   bool get bluetoothEnabled => bluetoothState.value == BluetoothState.stateOn;
-  bool get authorizationStatusOk =>
-      authorizationStatus.value == AuthorizationStatus.allowed ||
-      authorizationStatus.value == AuthorizationStatus.always;
-  bool get locationServiceEnabled => locationService.value;
+  bool get authorizationStatusOk => authorizationStatus.value == AuthorizationStatus.allowed || authorizationStatus.value == AuthorizationStatus.always;
+  bool get locationServiceEnabled => locationService.value ?? false;
 
   updateBluetoothState(BluetoothState state) {
     bluetoothState.value = state;
@@ -46,15 +44,15 @@ class RequirementStateController extends GetxController {
     _pauseScanning.value = true;
   }
 
-  Stream<bool> get startBroadcastStream {
+  Stream<bool?> get startBroadcastStream {
     return _startBroadcasting.stream;
   }
 
-  Stream<bool> get startStream {
+  Stream<bool?> get startStream {
     return _startScanning.stream;
   }
 
-  Stream<bool> get pauseStream {
+  Stream<bool?> get pauseStream {
     return _pauseScanning.stream;
   }
 }

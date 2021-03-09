@@ -32,7 +32,7 @@ class MainApp extends StatelessWidget {
             color: primary,
           ),
           textTheme: themeData.primaryTextTheme.copyWith(
-            headline6: themeData.textTheme.headline6.copyWith(
+            headline6: themeData.textTheme.headline6?.copyWith(
               color: primary,
             ),
           ),

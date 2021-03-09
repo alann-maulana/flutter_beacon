@@ -19,7 +19,7 @@ class BeaconBroadcast {
   final int minor;
 
   /// The minor value of beacon.
-  final int txPower;
+  final int? txPower;
 
   final AdvertisingMode advertisingMode;
 
@@ -27,9 +27,9 @@ class BeaconBroadcast {
 
   BeaconBroadcast({
     this.identifier = 'com.flutterBeacon',
-    @required this.proximityUUID,
-    @required this.major,
-    @required this.minor,
+    required this.proximityUUID,
+    required this.major,
+    required this.minor,
     this.txPower,
     this.advertisingMode = AdvertisingMode.low,
     this.advertisingTxPowerLevel = AdvertisingTxPowerLevel.high,

@@ -337,14 +337,14 @@ void main() {
 
   group('Event channel - bluetooth state', () {
     test('bluetoothStateChanged', () async {
-      final result = await flutterBeacon.bluetoothStateChanged().first;
+      final result = await flutterBeacon.bluetoothStateChanged.first;
       expect(result.value, 'STATE_ON');
     });
   });
 
   group('Event channel - authorization status', () {
     test('authorizationStatusChanged', () async {
-      final result = await flutterBeacon.authorizationStatusChanged().first;
+      final result = await flutterBeacon.authorizationStatusChanged.first;
       expect(result.value, 'ALLOWED');
     });
   });

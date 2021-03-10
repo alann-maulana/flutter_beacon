@@ -216,22 +216,13 @@ class FlutterBeacon {
   /// Start checking for bluetooth state changed.
   ///
   /// This will fires [BluetoothState] whenever bluetooth state changed.
-  Stream<BluetoothState> bluetoothStateChanged() {
-    if (_onBluetoothState == null) {
-      _onBluetoothState = _bluetoothStateChangedChannel.receiveBroadcastStream().map((dynamic event) => BluetoothState.parse(event));
-    }
-    return _onBluetoothState!;
-  }
+  Stream<BluetoothState> get bluetoothStateChanged => _onBluetoothState ??= _bluetoothStateChangedChannel.receiveBroadcastStream().map((dynamic event) => BluetoothState.parse(event));
 
   /// Start checking for location service authorization status changed.
   ///
   /// This will fires [AuthorizationStatus] whenever authorization status changed.
-  Stream<AuthorizationStatus> authorizationStatusChanged() {
-    if (_onAuthorizationStatus == null) {
-      _onAuthorizationStatus = _authorizationStatusChangedChannel.receiveBroadcastStream().map((dynamic event) => AuthorizationStatus.parse(event));
-    }
-    return _onAuthorizationStatus!;
-  }
+  Stream<AuthorizationStatus> get authorizationStatusChanged =>
+      _onAuthorizationStatus ??= _authorizationStatusChangedChannel.receiveBroadcastStream().map((dynamic event) => AuthorizationStatus.parse(event));
 
   Future<void> startBroadcast(BeaconBroadcast params) async {
     await _methodChannel.invokeMethod('startBroadcast', params.toJson);

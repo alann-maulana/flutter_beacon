@@ -220,4 +220,6 @@ fabric.properties
 coverage
 test/.test_coverage.dart
 
+example/ios/Flutter/.last_build_id
+
 # End of https://www.gitignore.io/api/dart,flutter,androidstudio,visualstudiocode

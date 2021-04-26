@@ -26,5 +26,6 @@ jobs:
       - run: make
       - run: make deps
       - run: pub global activate dartdoc
+      - run: dartdoc --version
       - run: make docs
       - run: pub publish -f -v

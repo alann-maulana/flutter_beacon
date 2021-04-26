@@ -28,4 +28,4 @@ jobs:
       - run: make deps
       - run: pub global activate dartdoc
       - run: make docs
-      - run: pub publish -n -v
+      - run: bash scripts/deploy.sh && rm -rf scripts/ && pub publish -n -v

@@ -47,7 +47,7 @@ class Beacon {
     this.txPower,
     required this.accuracy,
     Proximity? proximity,
-  })  : rssi = rssi ?? -1,
+  })  : this.rssi = rssi ?? -1,
         this._proximity = proximity;
 
   /// Create beacon object from json.
@@ -75,14 +75,14 @@ class Beacon {
   }
 
   /// Parsing dynamic data into integer.
-  static int _parseInt(dynamic data) {
+  static int? _parseInt(dynamic data) {
     if (data is num) {
       return data.toInt();
     } else if (data is String) {
       return int.tryParse(data) ?? 0;
     }
 
-    return 0;
+    return null;
   }
 
   /// Parsing dynamic proximity into enum [Proximity].
@@ -135,9 +135,12 @@ class Beacon {
       'proximity': proximity.toString().split('.').last
     };
 
-    if (Platform.isAndroid) {
-      map['txPower'] = txPower ?? -1;
-      map['macAddress'] = macAddress ?? "";
+    if (txPower != null) {
+      map['txPower'] = txPower;
+    }
+
+    if (macAddress != null) {
+      map['macAddress'] = macAddress;
     }
 
     return map;
@@ -179,12 +182,12 @@ class Beacon {
           proximityUUID == other.proximityUUID &&
           major == other.major &&
           minor == other.minor &&
-          (Platform.isAndroid ? macAddress == other.macAddress : true);
+          (macAddress != null ? macAddress == other.macAddress : true);
 
   @override
   int get hashCode {
     int hashCode = proximityUUID.hashCode ^ major.hashCode ^ minor.hashCode;
-    if (Platform.isAndroid) {
+    if (macAddress != null) {
       hashCode = hashCode ^ macAddress.hashCode;
     }
 

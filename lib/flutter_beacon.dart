@@ -81,11 +81,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Set the default AuthorizationStatus to use in requesting location authorization.
@@ -116,11 +114,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Check for the latest [BluetoothState] from device.
@@ -138,11 +134,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Request to open Bluetooth Settings from device.
@@ -153,11 +147,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Request to open Locations Settings from device.
@@ -168,11 +160,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Request to open Application Settings from device.
@@ -183,11 +173,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Close scanning API.
@@ -196,11 +184,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Start ranging iBeacons with defined [List] of [Region]s.

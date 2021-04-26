@@ -82,10 +82,6 @@ class Region {
   int get hashCode => identifier.hashCode;
 
   static int? _parseMajorMinor(dynamic number) {
-    if (number is int) {
-      return number;
-    }
-
     if (number is num) {
       return number.toInt();
     }

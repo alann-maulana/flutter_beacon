@@ -94,6 +94,18 @@ class AuthorizationStatus {
   );
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AuthorizationStatus &&
+          runtimeType == other.runtimeType &&
+          value == other.value &&
+          isAndroid == other.isAndroid &&
+          isIOS == other.isIOS;
+
+  @override
+  int get hashCode => value.hashCode ^ isAndroid.hashCode ^ isIOS.hashCode;
+
+  @override
   String toString() {
     return value;
   }

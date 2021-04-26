@@ -158,7 +158,18 @@ class _TabBroadcastingState extends State<TabBroadcasting> {
   }
 
   Widget get buttonBroadcast {
-    return RaisedButton(
+    final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
+      onPrimary: Colors.white,
+      primary: broadcasting ? Colors.red : Theme.of(context).primaryColor,
+      minimumSize: Size(88, 36),
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(2)),
+      ),
+    );
+
+    return ElevatedButton(
+      style: raisedButtonStyle,
       onPressed: () async {
         if (broadcasting) {
           await flutterBeacon.stopBroadcast();
@@ -179,8 +190,6 @@ class _TabBroadcastingState extends State<TabBroadcasting> {
         }
       },
       child: Text('Broadcast${broadcasting ? 'ing' : ''}'),
-      color: broadcasting ? Colors.red : Theme.of(context).primaryColor,
-      textColor: Colors.white,
     );
   }
 }

@@ -220,7 +220,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               'Please enable Location Services on Settings > Privacy > Location Services.',
             ),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text('OK'),
               ),
@@ -246,7 +246,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             title: Text('Bluetooth is Off'),
             content: Text('Please enable Bluetooth on Settings > Bluetooth.'),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text('OK'),
               ),

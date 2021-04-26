@@ -4,11 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
+import 'package:flutter_beacon_example/controller/requirement_state_controller.dart';
+import 'package:flutter_beacon_example/view/app_broadcasting.dart';
+import 'package:flutter_beacon_example/view/app_scanning.dart';
 import 'package:get/get.dart';
-
-import 'app_scanning.dart';
-import 'app_broadcasting.dart';
-import '../controller/requirement_state_controller.dart';
 
 class HomePage extends StatefulWidget {
   @override

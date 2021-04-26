@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_beacon_example/controller/requirement_state_controller.dart';
+import 'package:flutter_beacon_example/view/home_page.dart';
 import 'package:get/get.dart';
-
-import 'controller/requirement_state_controller.dart';
-import 'view/home_page.dart';
 
 void main() {
   runApp(MainApp());

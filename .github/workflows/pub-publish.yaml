@@ -1,16 +1,13 @@
-name: Pub Publish Test
+name: Pub Publish
 
 on:
   push:
-    branches:
-      master
-  pull_request:
-    branches:
-      master
+    tags:
+      - '*'
 
 jobs:
   build:
-    name: Publishing Test (Dry Run)
+    name: Publishing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -28,4 +25,4 @@ jobs:
       - run: make deps
       - run: pub global activate dartdoc
       - run: make docs
-      - run: pub publish -n -v
+      - run: pub publish -v

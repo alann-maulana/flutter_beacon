@@ -20,12 +20,13 @@ jobs:
         with:
           flutter-version: '2.0.5'
           channel: 'stable'
-      - run: echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV && echo $FLUTTER_ROOT
-      - run: bash scripts/credentials.sh
-      - run: rm -rf scripts/
-      - run: make
-      - run: make deps
-      - run: pub global activate dartdoc
-      - run: dartdoc --version
-      - run: make docs
-      - run: pub publish -f -v
+      - name: Documenting package
+        run: |
+          echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV
+          bash scripts/credentials.sh
+          rm -rf scripts/
+          make
+          make deps
+          pub global activate dartdoc
+          make docs
+          pub publish -f -v

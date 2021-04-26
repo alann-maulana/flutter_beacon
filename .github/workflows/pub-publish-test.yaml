@@ -29,8 +29,5 @@ jobs:
       - run: make
       - run: make deps
       - run: pub global activate dartdoc
-      - name: "Documenting package"
-        env:
-          FLUTTER_ROOT: ${{ env.FLUTTER_HOME }}
-        run: make docs
+      - run: make docs
       - run: pub publish -n -v

@@ -41,6 +41,7 @@ main() {
       txPower: -59,
     );
     expect(beacon3.proximity, Proximity.near);
+    expect(beacon3.rssi, -1);
   });
 
   test('constructor from json must be equal', () {
@@ -88,6 +89,10 @@ main() {
 
     expect(beacon1 == beacon2, isTrue);
     expect(beacon1.hashCode == beacon2.hashCode, isTrue);
+  });
+
+  test('parsing beacon array must be empty', () {
+    expect(Beacon.beaconFromArray(Object()).isEmpty, isTrue);
   });
 
   test('parsing beacon array length must be equal to "2"', () {

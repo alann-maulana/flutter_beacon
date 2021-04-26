@@ -51,11 +51,16 @@ class BeaconBroadcast {
       'txPower': txPower,
     };
 
-    if (Platform.isAndroid) {
+    if (advertisingMode != null) {
       map['advertisingMode'] = advertisingMode!.index;
+    }
+
+    if (advertisingTxPowerLevel != null) {
       map['advertisingTxPowerLevel'] = advertisingTxPowerLevel!.index;
-    } else if (Platform.isIOS) {
-      map['identifier'] = identifier;
+    }
+
+    if (identifier != null) {
+      map['identifier'] = identifier!;
     }
 
     return map;

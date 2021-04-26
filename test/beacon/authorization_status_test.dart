@@ -32,5 +32,6 @@ void main() {
         AuthorizationStatus.restricted);
     expect(AuthorizationStatus.parse('NOT_DETERMINED'),
         AuthorizationStatus.notDetermined);
+    expect(() => AuthorizationStatus.parse('null'), throwsException);
   });
 }

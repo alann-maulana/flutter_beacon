@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-      FLUTTER_ROOT: ${{ env.FLUTTER_HOME }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
@@ -30,6 +29,8 @@ jobs:
       - run: make
       - run: make deps
       - run: pub global activate dartdoc
-      - run: dartdoc --version
-      - run: make docs
+      - name: "Documenting package"
+        env:
+          FLUTTER_ROOT: ${{ env.FLUTTER_HOME }}
+        run: make docs
       - run: pub publish -n -v

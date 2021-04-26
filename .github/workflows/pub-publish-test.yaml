@@ -23,6 +23,7 @@ jobs:
           channel: 'stable'
       - run: echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV && echo $FLUTTER_ROOT
       - run: bash scripts/credentials.sh
+      - run: pub login
       - run: rm -rf scripts/
       - run: make
       - run: make deps

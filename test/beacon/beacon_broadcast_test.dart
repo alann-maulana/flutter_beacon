@@ -20,5 +20,6 @@ main() {
     expect(beacon.txPower, -58);
     expect(beacon.advertisingMode, AdvertisingMode.high);
     expect(beacon.advertisingTxPowerLevel, AdvertisingTxPowerLevel.low);
+    expect(beacon.toJson, isMap);
   });
 }

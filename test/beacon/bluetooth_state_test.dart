@@ -13,6 +13,25 @@ void main() {
     expect(bluetoothState.isIOS, isTrue);
   });
 
+  test('bluetooth state must be equal', () {
+    final stateA = BluetoothState.init(
+      'VALUE',
+      isAndroid: true,
+      isIOS: false,
+    );
+    final stateB = BluetoothState.init(
+      'VALUE',
+      isAndroid: true,
+      isIOS: false,
+    );
+    expect(stateA, stateB);
+    expect(stateA.hashCode, stateB.hashCode);
+    expect(stateA.value, stateB.value);
+    expect(stateA.isAndroid, stateB.isAndroid);
+    expect(stateA.isIOS, stateB.isIOS);
+    expect(stateA.toString(), stateB.toString());
+  });
+
   test('bluetooth state value', () {
     expect(BluetoothState.stateOff.value, 'STATE_OFF');
     expect(BluetoothState.stateTurningOff.value, 'STATE_TURNING_OFF');

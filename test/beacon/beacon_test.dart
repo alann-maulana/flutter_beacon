@@ -39,6 +39,7 @@ main() {
       major: 1,
       minor: 2,
       txPower: -59,
+      rssi: null,
     );
     expect(beacon3.proximity, Proximity.near);
     expect(beacon3.rssi, -1);
@@ -127,6 +128,16 @@ main() {
 
   test('beacon json must be equal', () {
     final beacon = Beacon.fromJson({
+      'macAddress': 'MAC',
+      'proximityUUID': 'UUID',
+      'major': 1,
+      'minor': 2,
+      'rssi': -60,
+      'accuracy': 1.23,
+      'proximity': 'far',
+    });
+    final beacon2 = Beacon.fromJson({
+      'macAddress': 'MAC',
       'proximityUUID': 'UUID',
       'major': 1,
       'minor': 2,
@@ -135,7 +146,10 @@ main() {
       'proximity': 'far',
     });
 
+    expect(beacon, beacon2);
+    expect(beacon.hashCode, beacon2.hashCode);
     expect(beacon.toJson, {
+      'macAddress': 'MAC',
       'proximityUUID': 'UUID',
       'major': 1,
       'minor': 2,
@@ -152,6 +166,7 @@ main() {
           'rssi': -60,
           'accuracy': 1.23,
           'proximity': 'far',
+          'macAddress': 'MAC',
         }));
   });
 }

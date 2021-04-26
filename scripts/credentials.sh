@@ -5,4 +5,4 @@ if [[ ! -e ~/.pub-cache/credentials.json ]]; then
     touch ~/.pub-cache/credentials.json
 fi
 
-cat $PUB_CREDENTIALS > ~/.pub-cache/credentials.json
+echo $PUB_CREDENTIALS > ~/.pub-cache/credentials.json

@@ -26,11 +26,19 @@ main() {
 
     const beacon2 = const Beacon(
       accuracy: 0.4,
+      proximityUUID: 'UUID',
+      major: 1,
+      minor: 2,
+      txPower: -59,
     );
     expect(beacon2.proximity, Proximity.immediate);
 
     const beacon3 = const Beacon(
       accuracy: 2.9,
+      proximityUUID: 'UUID',
+      major: 1,
+      minor: 2,
+      txPower: -59,
     );
     expect(beacon3.proximity, Proximity.near);
   });

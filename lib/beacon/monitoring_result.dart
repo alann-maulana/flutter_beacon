@@ -22,7 +22,7 @@ class MonitoringResult {
   /// The [MonitoringState] of monitoring result
   ///
   /// This value is not null when [monitoringEventType] is [MonitoringEventType.didDetermineStateForRegion]
-  final MonitoringState monitoringState;
+  final MonitoringState? monitoringState;
 
   /// The [Region] of ranging result.
   final Region region;
@@ -34,7 +34,7 @@ class MonitoringResult {
         this.region = Region.fromJson(json['region']);
 
   /// Parsing dynamic state into [MonitoringState].
-  static MonitoringState _parseMonitoringState(dynamic state) {
+  static MonitoringState? _parseMonitoringState(dynamic state) {
     if (!(state is String)) {
       return null;
     }
@@ -60,7 +60,7 @@ class MonitoringResult {
       return MonitoringEventType.didDetermineStateForRegion;
     }
 
-    return null;
+    throw Exception('invalid monitoring event type $event');
   }
 
   /// Return the serializable of this object into [Map].

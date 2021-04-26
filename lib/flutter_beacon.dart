@@ -50,10 +50,10 @@ class FlutterBeacon {
       EventChannel('flutter_authorization_status_changed');
 
   /// This information does not change from call to call. Cache it.
-  Stream<BluetoothState> _onBluetoothState;
+  Stream<BluetoothState>? _onBluetoothState;
 
   /// This information does not change from call to call. Cache it.
-  Stream<AuthorizationStatus> _onAuthorizationStatus;
+  Stream<AuthorizationStatus>? _onAuthorizationStatus;
 
   /// Initialize scanning API.
   Future<bool> get initializeScanning async {
@@ -234,7 +234,7 @@ class FlutterBeacon {
           .receiveBroadcastStream()
           .map((dynamic event) => BluetoothState.parse(event));
     }
-    return _onBluetoothState;
+    return _onBluetoothState!;
   }
 
   /// Start checking for location service authorization status changed.
@@ -246,7 +246,7 @@ class FlutterBeacon {
           .receiveBroadcastStream()
           .map((dynamic event) => AuthorizationStatus.parse(event));
     }
-    return _onAuthorizationStatus;
+    return _onAuthorizationStatus!;
   }
 
   Future<void> startBroadcast(BeaconBroadcast params) async {

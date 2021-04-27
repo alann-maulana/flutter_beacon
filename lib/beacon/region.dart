@@ -12,23 +12,23 @@ class Region {
   /// The proximity UUID of region.
   ///
   /// For iOS, this value can not be null.
-  final String proximityUUID;
+  final String? proximityUUID;
 
   /// The major number of region.
   ///
   /// For both Android and iOS, this value can be null.
-  final int major;
+  final int? major;
 
   /// The minor number of region.
   ///
   /// For both Android and iOS, this value can be null.
-  final int minor;
+  final int? minor;
 
   /// Constructor for creating [Region] object.
   ///
   /// The [proximityUUID] must not be null when [Platform.isIOS]
   Region({
-    @required this.identifier,
+    required this.identifier,
     this.proximityUUID,
     this.major,
     this.minor,
@@ -81,11 +81,7 @@ class Region {
   @override
   int get hashCode => identifier.hashCode;
 
-  static int _parseMajorMinor(dynamic number) {
-    if (number is int) {
-      return number;
-    }
-
+  static int? _parseMajorMinor(dynamic number) {
     if (number is num) {
       return number.toInt();
     }

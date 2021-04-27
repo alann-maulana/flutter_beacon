@@ -50,10 +50,10 @@ class FlutterBeacon {
       EventChannel('flutter_authorization_status_changed');
 
   /// This information does not change from call to call. Cache it.
-  Stream<BluetoothState> _onBluetoothState;
+  Stream<BluetoothState>? _onBluetoothState;
 
   /// This information does not change from call to call. Cache it.
-  Stream<AuthorizationStatus> _onAuthorizationStatus;
+  Stream<AuthorizationStatus>? _onAuthorizationStatus;
 
   /// Initialize scanning API.
   Future<bool> get initializeScanning async {
@@ -81,11 +81,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Set the default AuthorizationStatus to use in requesting location authorization.
@@ -116,11 +114,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Check for the latest [BluetoothState] from device.
@@ -138,11 +134,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Request to open Bluetooth Settings from device.
@@ -153,11 +147,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Request to open Locations Settings from device.
@@ -168,11 +160,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Request to open Application Settings from device.
@@ -183,11 +173,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Close scanning API.
@@ -196,11 +184,9 @@ class FlutterBeacon {
 
     if (result is bool) {
       return result;
-    } else if (result is int) {
-      return result == 1;
     }
 
-    return result;
+    return result == 1;
   }
 
   /// Start ranging iBeacons with defined [List] of [Region]s.
@@ -234,7 +220,7 @@ class FlutterBeacon {
           .receiveBroadcastStream()
           .map((dynamic event) => BluetoothState.parse(event));
     }
-    return _onBluetoothState;
+    return _onBluetoothState!;
   }
 
   /// Start checking for location service authorization status changed.
@@ -246,7 +232,7 @@ class FlutterBeacon {
           .receiveBroadcastStream()
           .map((dynamic event) => AuthorizationStatus.parse(event));
     }
-    return _onAuthorizationStatus;
+    return _onAuthorizationStatus!;
   }
 
   Future<void> startBroadcast(BeaconBroadcast params) async {

@@ -18,8 +18,8 @@ class AuthorizationStatus {
   @visibleForTesting
   const AuthorizationStatus.init(
     this.value, {
-    this.isAndroid,
-    this.isIOS,
+    this.isAndroid = false,
+    this.isIOS = false,
   });
 
   @visibleForTesting
@@ -39,7 +39,7 @@ class AuthorizationStatus {
         return notDetermined;
     }
 
-    return null;
+    throw Exception('invalid authorization status $value');
   }
 
   /// Shows that user allowed the authorization.
@@ -92,6 +92,18 @@ class AuthorizationStatus {
     isAndroid: true,
     isIOS: true,
   );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AuthorizationStatus &&
+          runtimeType == other.runtimeType &&
+          value == other.value &&
+          isAndroid == other.isAndroid &&
+          isIOS == other.isIOS;
+
+  @override
+  int get hashCode => value.hashCode ^ isAndroid.hashCode ^ isIOS.hashCode;
 
   @override
   String toString() {

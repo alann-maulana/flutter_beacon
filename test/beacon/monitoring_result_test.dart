@@ -55,4 +55,17 @@ main() {
     expect(enter.monitoringState, MonitoringState.unknown);
     expect(enter.toJson, map);
   });
+
+  test('MonitoringResult must throw', () {
+    final map = {
+      'region': {
+        'identifier': 'id',
+        'proximityUUID': 'UUID',
+      },
+      'state': 'unknown',
+      'event': 'null',
+    };
+
+    expect(() => MonitoringResult.from(map), throwsException);
+  });
 }

@@ -7,7 +7,7 @@ part of flutter_beacon;
 /// Class for managing Beacon Broadcast object.
 class BeaconBroadcast {
   /// The unique identifier of region.
-  final String identifier;
+  final String? identifier;
 
   /// The proximity UUID of beacon.
   final String proximityUUID;
@@ -18,18 +18,18 @@ class BeaconBroadcast {
   /// The minor value of beacon.
   final int minor;
 
-  /// The minor value of beacon.
-  final int txPower;
+  /// The txPower value of beacon. Specify null to use the default value for the device.
+  final int? txPower;
 
-  final AdvertisingMode advertisingMode;
+  final AdvertisingMode? advertisingMode;
 
-  final AdvertisingTxPowerLevel advertisingTxPowerLevel;
+  final AdvertisingTxPowerLevel? advertisingTxPowerLevel;
 
   BeaconBroadcast({
     this.identifier = 'com.flutterBeacon',
-    @required this.proximityUUID,
-    @required this.major,
-    @required this.minor,
+    required this.proximityUUID,
+    required this.major,
+    required this.minor,
     this.txPower,
     this.advertisingMode = AdvertisingMode.low,
     this.advertisingTxPowerLevel = AdvertisingTxPowerLevel.high,
@@ -51,11 +51,16 @@ class BeaconBroadcast {
       'txPower': txPower,
     };
 
-    if (Platform.isAndroid) {
-      map['advertisingMode'] = advertisingMode.index;
-      map['advertisingTxPowerLevel'] = advertisingTxPowerLevel.index;
-    } else if (Platform.isIOS) {
-      map['identifier'] = identifier;
+    if (advertisingMode != null) {
+      map['advertisingMode'] = advertisingMode!.index;
+    }
+
+    if (advertisingTxPowerLevel != null) {
+      map['advertisingTxPowerLevel'] = advertisingTxPowerLevel!.index;
+    }
+
+    if (identifier != null) {
+      map['identifier'] = identifier!;
     }
 
     return map;

@@ -21,13 +21,15 @@ jobs:
           java-version: '12.x'
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '1.22.4'
+          flutter-version: '2.0.5'
           channel: 'stable'
-      - run: echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV && echo $FLUTTER_ROOT
-      - run: bash scripts/credentials.sh
-      - run: rm -rf scripts/
-      - run: make
-      - run: make deps
-      - run: pub global activate dartdoc
-      - run: make docs
-      - run: pub publish -n -v
+      - name: Documenting package
+        run: |
+          echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV
+          bash scripts/credentials.sh
+          rm -rf scripts/
+          make
+          make deps
+          pub global activate dartdoc
+          make docs
+          pub publish -n -v

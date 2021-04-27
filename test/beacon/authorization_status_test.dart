@@ -13,6 +13,25 @@ void main() {
     expect(authorizationStatus.isIOS, isTrue);
   });
 
+  test('authorization must be equal', () {
+    final statusA = AuthorizationStatus.init(
+      'VALUE',
+      isAndroid: false,
+      isIOS: true,
+    );
+    final statusB = AuthorizationStatus.init(
+      'VALUE',
+      isAndroid: false,
+      isIOS: true,
+    );
+    expect(statusA, statusB);
+    expect(statusA.hashCode, statusB.hashCode);
+    expect(statusA.value, statusB.value);
+    expect(statusA.isAndroid, statusB.isAndroid);
+    expect(statusA.isIOS, statusB.isIOS);
+    expect(statusA.toString(), statusB.toString());
+  });
+
   test('authorization value', () {
     expect(AuthorizationStatus.allowed.value, 'ALLOWED');
     expect(AuthorizationStatus.always.value, 'ALWAYS');
@@ -32,5 +51,6 @@ void main() {
         AuthorizationStatus.restricted);
     expect(AuthorizationStatus.parse('NOT_DETERMINED'),
         AuthorizationStatus.notDetermined);
+    expect(() => AuthorizationStatus.parse('null'), throwsException);
   });
 }

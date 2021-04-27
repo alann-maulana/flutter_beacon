@@ -4,13 +4,14 @@
 
 [Flutter plugin](https://pub.dartlang.org/packages/flutter_beacon/) to work with iBeacons.  
 
-An hybrid iBeacon scanner SDK for Flutter plugin. Supports Android API 18+ and iOS 8+.
+An hybrid iBeacon scanner and transmitter SDK for Flutter plugin. Supports Android API 18+ and iOS 8+.
 
 Features:
 
 * Automatic permission management
 * Ranging iBeacons  
 * Monitoring iBeacons
+* Transmit as iBeacon
 
 ## Installation
 

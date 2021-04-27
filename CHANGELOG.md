@@ -1,3 +1,6 @@
+## [0.5.0]
+* Migration to null safety
+
 ## [0.4.0]
 * Update to Android v2 embedding
 * Add broadcast Beacon feature

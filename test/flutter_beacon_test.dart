@@ -66,6 +66,14 @@ void main() {
         return true;
       }
 
+      if (method == 'setScanPeriod') {
+        return true;
+      }
+
+      if (method == 'setBetweenScanPeriod') {
+        return true;
+      }
+
       throw MissingPluginException(
           'No implementation found for method $method on channel ${channel.name}');
     });
@@ -260,6 +268,20 @@ void main() {
     test('OpenLocationSettings return "true"', () async {
       expect(
         await flutterBeacon.openLocationSettings,
+        true,
+      );
+    });
+
+    test('SetScanPeriod return "true"', () async {
+      expect(
+        await flutterBeacon.setScanPeriod(1000),
+        true,
+      );
+    });
+
+    test('SetBetweenScanPeriod return "true"', () async {
+      expect(
+        await flutterBeacon.setBetweenScanPeriod(400),
         true,
       );
     });

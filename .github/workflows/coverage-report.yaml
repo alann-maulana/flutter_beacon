@@ -52,6 +52,6 @@ jobs:
     - run: gem install coveralls-lcov
     - run: cat ./coverage/lcov.info
     - name: Send to coveralls.io
-      run: coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
+      run: coveralls-lcov --verbose --repo-token $COVERALLS_TOKEN coverage/lcov.info
       env:
         COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}

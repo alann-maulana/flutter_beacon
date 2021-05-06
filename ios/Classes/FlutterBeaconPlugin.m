@@ -217,6 +217,20 @@
         result(@(YES));
         return;
     }
+
+    if ([@"setScanPeriod" isEqualToString:call.method]) {
+        // do nothing
+
+        result(@(YES));
+        return;
+    }
+
+    if ([@"setBetweenScanPeriod" isEqualToString:call.method]) {
+        // do nothing
+
+        result(@(YES));
+        return;
+    }
     
     if ([@"openApplicationSettings" isEqualToString:call.method]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];

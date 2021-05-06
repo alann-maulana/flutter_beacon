@@ -178,6 +178,18 @@ class FlutterBeacon {
     return result == 1;
   }
 
+  /// Customize duration of the beacon scan on the Android Platform.
+  Future<bool> setScanPeriod(int scanPeriod) async {
+    return await _methodChannel
+        .invokeMethod('setScanPeriod', {"scanPeriod": scanPeriod});
+  }
+
+  /// Customize duration spent not scanning between each scan cycle on the Android Platform.
+  Future<bool> setBetweenScanPeriod(int scanPeriod) async {
+    return await _methodChannel.invokeMethod(
+        'setBetweenScanPeriod', {"betweenScanPeriod": scanPeriod});
+  }
+
   /// Close scanning API.
   Future<bool> get close async {
     final result = await _methodChannel.invokeMethod('close');

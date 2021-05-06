@@ -3,6 +3,7 @@ package com.flutterbeacon;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.RemoteException;
 
 import androidx.annotation.NonNull;
 
@@ -158,6 +159,7 @@ public class FlutterBeaconPlugin implements FlutterPlugin, ActivityAware, Method
       if (beaconManager != null && !beaconManager.isBound(beaconScanner.beaconConsumer)) {
         this.flutterResult = result;
         this.beaconManager.bind(beaconScanner.beaconConsumer);
+
         return;
       }
 
@@ -168,6 +170,28 @@ public class FlutterBeaconPlugin implements FlutterPlugin, ActivityAware, Method
     if (call.method.equals("initializeAndCheck")) {
       initializeAndCheck(result);
       return;
+    }
+
+    if (call.method.equals("setScanPeriod")) {
+      int scanPeriod = call.argument("scanPeriod");
+      this.beaconManager.setForegroundScanPeriod(scanPeriod);
+      try {
+        this.beaconManager.updateScanPeriods();
+        result.success(true);
+      } catch (RemoteException e) {
+        result.success(false);
+      }
+    }
+
+    if (call.method.equals("setBetweenScanPeriod")) {
+      int betweenScanPeriod = call.argument("betweenScanPeriod");
+      this.beaconManager.setForegroundBetweenScanPeriod(betweenScanPeriod);
+      try {
+        this.beaconManager.updateScanPeriods();
+        result.success(true);
+      } catch (RemoteException e) {
+        result.success(false);
+      }
     }
 
     if (call.method.equals("setLocationAuthorizationTypeDefault")) {

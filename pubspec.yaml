@@ -1,5 +1,5 @@
 name: flutter_beacon
-description: Flutter plugin for scanning and transmit as beacon (iBeacon) on Android and iOS.
+description: Flutter plugin for scanning beacon (iBeacon platform) devices on Android, iOS and MacOS.
 version: 0.5.0
 homepage: https://github.com/alann-maulana/flutter_beacon
 
@@ -22,4 +22,6 @@ flutter:
         package: com.flutterbeacon
         pluginClass: FlutterBeaconPlugin
       ios:
+        pluginClass: FlutterBeaconPlugin
+      macos:
         pluginClass: FlutterBeaconPlugin

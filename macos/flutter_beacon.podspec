@@ -16,11 +16,11 @@ Flutter plugin for scanning beacon (iBeacon platform) devices on Android, iOS an
   s.source_files     = 'Classes/**/*'
   s.public_header_files     = 'Classes/**/*.h'
   s.dependency 'FlutterMacOS'
-  s.dependency 'ReactiveCocoa'
-  s.dependency 'BlocksKit'
-  s.dependency 'libextobjc'
+  s.dependency 'ReactiveObjC', '3.1.1'
+  s.dependency 'BlocksKit', '2.2.5'
+  s.dependency 'libextobjc', '0.6'
 
-  s.platform = :osx, '10.11'
+  s.platform = :osx, '10.12'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version = '5.0'
 end

@@ -21,7 +21,7 @@
     self  = [super init];
     if (self) {
         
-        self.managerQueue = dispatch_queue_create("com.huge.DesktopBeacon.centralManagerQueue", NULL);
+        self.managerQueue = dispatch_queue_create("com.flutter.beacon.centralManagerQueue", NULL);
         
         
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self
@@ -42,10 +42,10 @@
 -(void)startScanning {
     if (self.centralManager.state == CBCentralManagerStatePoweredOn) {
         [self.centralManager scanForPeripheralsWithServices:nil
-                                                options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @YES}];
+                                                    options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @YES}];
         self.scanning = YES;
     }
-
+    
 }
 
 
@@ -118,7 +118,7 @@
      advertisementData:(NSDictionary *)advertisementData
                   RSSI:(NSNumber *)RSSI {
     FBBeacon *beacon = [FBBeacon beaconWithAdvertiseDictionary:advertisementData];
-    beacon.RSSI = RSSI;
+    beacon.rssi = RSSI;
     if (beacon) {
         [(RACSubject *)self.beaconSignal sendNext:beacon];
     }

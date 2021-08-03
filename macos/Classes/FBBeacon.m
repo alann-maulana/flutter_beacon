@@ -2,11 +2,8 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "stdint.h"
 #import "EXTScope.h"
-NSString *const HGBeaconAdvertismentManufacturerDataKey = @"kCBAdvDataAppleBeaconKey";
 
-//@interface HGBeacon()
-//@property (nonatomic, readonly) NSString *keyValue;
-//@end
+NSString *const HGBeaconAdvertismentManufacturerDataKey = @"kCBAdvDataAppleBeaconKey";
 
 @implementation FBBeacon
 
@@ -38,12 +35,12 @@ NSString *const HGBeaconAdvertismentManufacturerDataKey = @"kCBAdvDataAppleBeaco
     if ([data length] != 25) {
         return nil;
     }
-
+    
     u_int16_t companyIdentifier,major,minor = 0;
-
+    
     int8_t measuredPower,dataType, dataLength = 0;
     char uuidBytes[17] = {0};
-
+    
     NSRange companyIDRange = NSMakeRange(0,2);
     [data getBytes:&companyIdentifier range:companyIDRange];
     if (companyIdentifier != 0x4C) {
@@ -117,12 +114,23 @@ NSString *const HGBeaconAdvertismentManufacturerDataKey = @"kCBAdvDataAppleBeaco
             [self class], self, [self.proximityUUID UUIDString], self.major, self.minor];
 }
 
+- (NSDictionary<NSString*, NSObject*> * _Nonnull) dictionaryBeacon {
+    return @{
+        @"proximityUUID": [self.proximityUUID UUIDString],
+        @"major": self.major,
+        @"minor": self.minor,
+        @"rssi": self.rssi,
+        @"accuracy": [NSString stringWithFormat:@"%.2f", 0.0],
+        @"proximity": @"unknown"
+    };
+}
+
 
 #pragma mark - NSCopying
 -(id)copyWithZone:(NSZone *)zone {
     FBBeacon *beaconCopy = [[FBBeacon allocWithZone:zone] initWithProximityUUID:self.proximityUUID major:self.major minor:self.minor measuredPower:self.measuredPower];
     beaconCopy.lastUpdated = self.lastUpdated;
-    beaconCopy.RSSI = self.RSSI;
+    beaconCopy.rssi = self.rssi;
     return beaconCopy;
 }
 

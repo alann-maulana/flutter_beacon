@@ -13,8 +13,8 @@ Flutter plugin for scanning beacon (iBeacon platform) devices on Android, iOS an
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Eyro Labs' => 'maulana@cubeacon.com' }
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
-  s.public_header_files     = 'Classes/**/*.h'
+  s.source_files     = 'Classes/*.swift', 'Classes/*.{h,m}'
+  s.public_header_files = 'Classes/*.h'
   s.dependency 'FlutterMacOS'
   s.dependency 'ReactiveObjC', '3.1.1'
   s.dependency 'BlocksKit', '2.2.5'

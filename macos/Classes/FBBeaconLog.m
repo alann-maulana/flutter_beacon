@@ -7,7 +7,6 @@ static const NSUInteger HGBeaconHistoryDefaultMaximumSize = 300;
 @interface FBBeaconLog()
 @property(nonatomic, strong) NSMutableDictionary *beaconSubjectMap;
 @property(nonatomic, assign) NSUInteger maximumHistorySize;
-//@property(nonatomic, strong) RACSignal *beaconSignal;
 @end
 
 @implementation FBBeaconLog

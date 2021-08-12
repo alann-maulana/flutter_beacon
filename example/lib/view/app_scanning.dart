@@ -11,7 +11,7 @@ class TabScanning extends StatefulWidget {
 }
 
 class _TabScanningState extends State<TabScanning> {
-  StreamSubscription<RangingResult> _streamRanging;
+  StreamSubscription<RangingResult>? _streamRanging;
   final _regionBeacons = <Region, List<Beacon>>{};
   final _beacons = <Beacon>[];
   final controller = Get.find<RequirementStateController>();
@@ -49,11 +49,15 @@ class _TabScanningState extends State<TabScanning> {
         identifier: 'Cubeacon',
         proximityUUID: 'CB10023F-A318-3394-4199-A8730C7C1AEC',
       ),
+      Region(
+        identifier: 'BeaconType2',
+        proximityUUID: '6a84c716-0f2a-1ce9-f210-6a63bd873dd9',
+      ),
     ];
 
     if (_streamRanging != null) {
-      if (_streamRanging.isPaused) {
-        _streamRanging.resume();
+      if (_streamRanging!.isPaused) {
+        _streamRanging?.resume();
         return;
       }
     }

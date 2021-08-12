@@ -24,7 +24,16 @@ dependencies:
 
 ### Setup specific for Android
 
-Nothing.
+For target SDK version 29+ (Android 10, 11) is necessary to add manually ```ACCESS_FINE_LOCATION```
+
+``` 
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+```
+
+and if you want also background scanning: 
+```
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+```
 
 ### Setup specific for iOS
 

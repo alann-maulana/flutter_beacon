@@ -65,7 +65,7 @@ class _TabScanningState extends State<TabScanning> {
     _streamRanging =
         flutterBeacon.ranging(regions).listen((RangingResult result) {
       print(result);
-      if (result != null && mounted) {
+      if (mounted) {
         setState(() {
           _regionBeacons[result.region] = result.beacons;
           _beacons.clear();
@@ -110,7 +110,7 @@ class _TabScanningState extends State<TabScanning> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _beacons == null || _beacons.isEmpty
+      body: _beacons.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView(
               children: ListTile.divideTiles(

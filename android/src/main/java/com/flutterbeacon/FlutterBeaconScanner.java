@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.RemoteException;
+import android.os.Looper;
+import android.os.Handler;
 import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
@@ -27,6 +29,8 @@ class FlutterBeaconScanner {
   private final FlutterBeaconPlugin plugin;
   private final WeakReference<Activity> activity;
 
+  private Handler handler;
+
   private EventChannel.EventSink eventSinkRanging;
   private EventChannel.EventSink eventSinkMonitoring;
   private List<Region> regionRanging;
@@ -35,6 +39,7 @@ class FlutterBeaconScanner {
   public FlutterBeaconScanner(FlutterBeaconPlugin plugin, Activity activity) {
     this.plugin = plugin;
     this.activity = new WeakReference<>(activity);
+    handler = new Handler(Looper.getMainLooper());
   }
 
   final EventChannel.StreamHandler rangingStreamHandler = new EventChannel.StreamHandler() {
@@ -120,10 +125,15 @@ class FlutterBeaconScanner {
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> collection, Region region) {
       if (eventSinkRanging != null) {
-        Map<String, Object> map = new HashMap<>();
+        final Map<String, Object> map = new HashMap<>();
         map.put("region", FlutterBeaconUtils.regionToMap(region));
         map.put("beacons", FlutterBeaconUtils.beaconsToArray(new ArrayList<>(collection)));
-        eventSinkRanging.success(map);
+        handler.post(new Runnable(){
+          @Override
+          public void run() {
+            eventSinkRanging.success(map);
+          }
+        });
       }
     }
   };
@@ -205,31 +215,46 @@ class FlutterBeaconScanner {
     @Override
     public void didEnterRegion(Region region) {
       if (eventSinkMonitoring != null) {
-        Map<String, Object> map = new HashMap<>();
+        final Map<String, Object> map = new HashMap<>();
         map.put("event", "didEnterRegion");
         map.put("region", FlutterBeaconUtils.regionToMap(region));
-        eventSinkMonitoring.success(map);
+        handler.post(new Runnable(){
+          @Override
+          public void run() {
+            eventSinkMonitoring.success(map);
+          }
+        });
       }
     }
 
     @Override
     public void didExitRegion(Region region) {
       if (eventSinkMonitoring != null) {
-        Map<String, Object> map = new HashMap<>();
+        final Map<String, Object> map = new HashMap<>();
         map.put("event", "didExitRegion");
         map.put("region", FlutterBeaconUtils.regionToMap(region));
-        eventSinkMonitoring.success(map);
+        handler.post(new Runnable(){
+          @Override
+          public void run() {
+            eventSinkMonitoring.success(map);
+          }
+        });
       }
     }
 
     @Override
     public void didDetermineStateForRegion(int state, Region region) {
       if (eventSinkMonitoring != null) {
-        Map<String, Object> map = new HashMap<>();
+        final Map<String, Object> map = new HashMap<>();
         map.put("event", "didDetermineStateForRegion");
         map.put("state", FlutterBeaconUtils.parseState(state));
         map.put("region", FlutterBeaconUtils.regionToMap(region));
-        eventSinkMonitoring.success(map);
+        handler.post(new Runnable(){
+          @Override
+          public void run() {
+            eventSinkMonitoring.success(map);
+          }
+        });
       }
     }
   };

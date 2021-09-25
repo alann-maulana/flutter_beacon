@@ -131,7 +131,9 @@ class FlutterBeaconScanner {
         handler.post(new Runnable(){
           @Override
           public void run() {
-            eventSinkRanging.success(map);
+            if(eventSinkRanging != null){
+              eventSinkRanging.success(map);
+            }
           }
         });
       }
@@ -221,7 +223,9 @@ class FlutterBeaconScanner {
         handler.post(new Runnable(){
           @Override
           public void run() {
-            eventSinkMonitoring.success(map);
+            if(eventSinkMonitoring != null){
+              eventSinkMonitoring.success(map);
+            }
           }
         });
       }
@@ -236,7 +240,9 @@ class FlutterBeaconScanner {
         handler.post(new Runnable(){
           @Override
           public void run() {
-            eventSinkMonitoring.success(map);
+            if(eventSinkMonitoring != null){
+              eventSinkMonitoring.success(map);
+            }
           }
         });
       }
@@ -252,7 +258,9 @@ class FlutterBeaconScanner {
         handler.post(new Runnable(){
           @Override
           public void run() {
-            eventSinkMonitoring.success(map);
+            if(eventSinkMonitoring != null){
+              eventSinkMonitoring.success(map);
+            }
           }
         });
       }

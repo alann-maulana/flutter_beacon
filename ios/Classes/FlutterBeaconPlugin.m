@@ -69,6 +69,7 @@
         // so set this as the default to stay backwards compatible.
         self.defaultLocationAuthorizationType = kCLAuthorizationStatusAuthorizedAlways;
     }
+    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
     return self;
 }
 
@@ -301,7 +302,10 @@
     
     self.shouldStartAdvertise = YES;
     self.beaconPeripheralData = [region peripheralDataWithMeasuredPower:measuredPower];
-    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
+    if (self.peripheralManager) {
+        [self.peripheralManager startAdvertising:(self.beaconPeripheralData)];
+    }
+    
 }
 
 ///------------------------------------------------------------
@@ -332,6 +336,7 @@
 
 - (void) stopRangingBeacon {
     for (CLBeaconRegion *region in self.regionRanging) {
+        NSLog(@"STOP: %@", region);
         [self.locationManager stopRangingBeaconsInRegion:region];
     }
     self.flutterEventSinkRanging = nil;

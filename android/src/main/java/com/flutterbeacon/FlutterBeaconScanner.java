@@ -99,6 +99,7 @@ class FlutterBeaconScanner {
         for (Region region : regionRanging) {
           plugin.getBeaconManager().startRangingBeaconsInRegion(region);
         }
+
       }
     } catch (RemoteException e) {
       if (eventSinkRanging != null) {

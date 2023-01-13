@@ -44,9 +44,8 @@ class FlutterPlatform {
   void requestAuthorization() {
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
       ActivityCompat.requestPermissions(getActivity(), new String[]{
-              Manifest.permission.BACKGROUND_LOCATION,
-
-      }, FlutterBeaconPlugin.REQUEST_CODE_LOCATION);
+              Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+      }, FlutterBeaconPlugin.PERMISSION_REQUEST_BACKGROUND_LOCATION);
     }
     ActivityCompat.requestPermissions(getActivity(), new String[]{
         Manifest.permission.ACCESS_COARSE_LOCATION,

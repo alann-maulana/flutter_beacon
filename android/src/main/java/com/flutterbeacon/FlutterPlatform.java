@@ -46,7 +46,7 @@ class FlutterPlatform {
       ActivityCompat.requestPermissions(getActivity(), new String[]{
               Manifest.permission.BACKGROUND_LOCATION,
 
-      },
+      }, FlutterBeaconPlugin.REQUEST_CODE_LOCATION);
     }
     ActivityCompat.requestPermissions(getActivity(), new String[]{
         Manifest.permission.ACCESS_COARSE_LOCATION,

@@ -42,12 +42,19 @@ class FlutterPlatform {
   }
 
   void requestAuthorization() {
-    ActivityCompat.requestPermissions(getActivity(), new String[]{
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      ActivityCompat.requestPermissions(getActivity(), new String[]{
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.BLUETOOTH_SCAN,
-        Manifest.permission.BLUETOOTH_CONNECT,
-    }, FlutterBeaconPlugin.REQUEST_CODE_LOCATION);
+        Manifest.permission.BLUETOOTH_CONNECT,}, 2);
+      return;
+    }else{
+      ActivityCompat.requestPermissions(getActivity(), new String[]{
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+      }, FlutterBeaconPlugin.REQUEST_CODE_LOCATION);
+    }
   }
 
   boolean checkLocationServicesPermission() {

@@ -31,7 +31,6 @@ public class FlutterBeaconPlugin implements FlutterPlugin, ActivityAware, Method
 
   static final int REQUEST_CODE_LOCATION = 1234;
   static final int REQUEST_CODE_BLUETOOTH = 5678;
-  static final int PERMISSION_REQUEST_BACKGROUND_LOCATION = 91011;
 
   private FlutterPluginBinding flutterPluginBinding;
   private ActivityPluginBinding activityPluginBinding;

@@ -178,8 +178,10 @@ public class FlutterBeaconPlugin implements FlutterPlugin, ActivityAware, Method
       try {
         this.beaconManager.updateScanPeriods();
         result.success(true);
+        return;
       } catch (RemoteException e) {
         result.success(false);
+        return;
       }
     }
 
@@ -189,8 +191,10 @@ public class FlutterBeaconPlugin implements FlutterPlugin, ActivityAware, Method
       try {
         this.beaconManager.updateScanPeriods();
         result.success(true);
+        return;
       } catch (RemoteException e) {
         result.success(false);
+        return;
       }
     }
 

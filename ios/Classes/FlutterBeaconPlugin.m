@@ -231,6 +231,20 @@
         result(@(YES));
         return;
     }
+
+    if ([@"setBackgroundScanPeriod" isEqualToString:call.method]) {
+        // do nothing
+
+        result(@(YES));
+        return;
+    }
+
+    if ([@"setBackgroundBetweenScanPeriod" isEqualToString:call.method]) {
+        // do nothing
+
+        result(@(YES));
+        return;
+    }
     
     if ([@"openApplicationSettings" isEqualToString:call.method]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];

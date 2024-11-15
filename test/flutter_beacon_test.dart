@@ -74,6 +74,14 @@ void main() {
         return true;
       }
 
+      if (method == 'setBackgroundScanPeriod') {
+        return true;
+      }
+
+      if (method == 'setBackgroundBetweenScanPeriod') {
+        return true;
+      }
+
       throw MissingPluginException(
           'No implementation found for method $method on channel ${channel.name}');
     });
@@ -282,6 +290,20 @@ void main() {
     test('SetBetweenScanPeriod return "true"', () async {
       expect(
         await flutterBeacon.setBetweenScanPeriod(400),
+        true,
+      );
+    });
+
+    test('SetBackgroundScanPeriod return "true"', () async {
+      expect(
+        await flutterBeacon.setBackgroundScanPeriod(1000),
+        true,
+      );
+    });
+
+    test('SetBackgroundBetweenScanPeriod return "true"', () async {
+      expect(
+        await flutterBeacon.setBackgroundBetweenScanPeriod(400),
         true,
       );
     });

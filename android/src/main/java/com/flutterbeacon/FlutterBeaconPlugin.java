@@ -194,6 +194,32 @@ public class FlutterBeaconPlugin implements FlutterPlugin, ActivityAware, Method
       }
     }
 
+    if (call.method.equals("setBackgroundScanPeriod")) {
+      int scanPeriod = call.argument("scanPeriod");
+      this.beaconManager.setBackgroundScanPeriod(scanPeriod);
+      try {
+        this.beaconManager.updateScanPeriods();
+        result.success(true);
+        return;
+      } catch (RemoteException e) {
+        result.success(false);
+        return;
+      }
+    }
+
+    if (call.method.equals("setBackgroundBetweenScanPeriod")) {
+      int betweenScanPeriod = call.argument("betweenScanPeriod");
+      this.beaconManager.setBackgroundBetweenScanPeriod(betweenScanPeriod);
+      try {
+        this.beaconManager.updateScanPeriods();
+        result.success(true);
+        return;
+      } catch (RemoteException e) {
+        result.success(false);
+        return;
+      }
+    }
+
     if (call.method.equals("setLocationAuthorizationTypeDefault")) {
       // Android does not have the concept of "requestWhenInUse" and "requestAlways" like iOS does,
       // so this method does nothing.

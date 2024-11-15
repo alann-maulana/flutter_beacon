@@ -190,6 +190,26 @@ class FlutterBeacon {
         'setBetweenScanPeriod', {"betweenScanPeriod": scanPeriod});
   }
 
+  /// Customize the duration of the beacon scan in the background on the Android platform.
+  ///
+  /// [scanPeriod] specifies the duration of the scan in milliseconds.
+  ///
+  /// Returns a [Future] that completes with `true` if the operation was successful.
+  Future<bool> setBackgroundScanPeriod(int scanPeriod) async {
+    return await _methodChannel
+        .invokeMethod('setBackgroundScanPeriod', {"scanPeriod": scanPeriod});
+  }
+
+  /// Customize the duration between beacon scans in the background on the Android platform.
+  ///
+  /// [scanPeriod] specifies the wait time between scans in milliseconds.
+  ///
+  /// Returns a [Future] that completes with `true` if the operation was successful.
+  Future<bool> setBackgroundBetweenScanPeriod(int scanPeriod) async {
+    return await _methodChannel.invokeMethod(
+        'setBackgroundBetweenScanPeriod', {"betweenScanPeriod": scanPeriod});
+  }
+
   /// Close scanning API.
   Future<bool> get close async {
     final result = await _methodChannel.invokeMethod('close');
